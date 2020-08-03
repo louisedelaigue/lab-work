@@ -1,0 +1,34 @@
+#--- Experiment --------------------------------------------------------------------------																													
+#30072020_J14																													
+#																													
+#--- System ------------------------------------------------------------------------------																													
+#Data from PyroScience Workbench V1.1.1.1035   www.pyroscience.com																													
+#<<DeviceNameDisabled>>																													
+#--- Instrument --------------------------------------------------------------------------																													
+#Device: Pico-pH [A] PICO-pH SN:2491CB02591E7FEC Firmware:4.03 Build:003																													
+#--- Channel -----------------------------------------------------------------------------																													
+#Channel [A Ch.1] - pH Sensor - XBE7-225-577																													
+#--- Settings & Calibration --------------------------------------------------------------																													
+#Settings:	Duration	Intensity	Amp	Frequency (Hz)	Crc Enable	Write Lock	Autom. Flash Duration	Autom. Amp Level	Broadcast Interval (ms)	Broadcast Enabled Sensors	Broadcast Options	Analyte	Fiber Type	Dual Frequency (Hz)	Radio Temp	Temperature (°C)	Opt. Temp. Chan.	Radio Pressure	Pressure (mbar)	Salinity (g/l)									
+#	8 ms	40% (E)	10M (400x)	3000	FALSE	FALSE	TRUE	TRUE	0	47	0	pH	1 mm	0	Fixed Temperature ('C)	20.000000	1	Internal Pressure Sensor	1013.000000	35.000000									
+#Calibration:	lastCal1	lastCal2	lastCal3	pka (pH)	slope	dPhi_ref (°)	pka_t (pH/K)	dyn_t (1/K)	bottom_t (1/K)	slope_t (1/K)	f	lambda_std (nm)	pka_is1	pka_is2	bkgdAmpl (mV)	bkgdDphi (°)	offset (pH)	dPhi1 (°)	pH1 (pH)	temp1 (°C)	salinity1 (g/L)	ldev1 (nm)	dPhi2 (°)	pH2 (pH)	temp2 (°C)	salinity2 (g/L)	ldev2 (nm)	Aon	Aoff
+#	30/07/2020	30/07/2020	01/01/2001	8.244000	1.081000	57.800000	-0.011500	-0.002090	0.000199	0.000000	0.032500	623.000000	2.540000	0.250000	0.811000	0.000000	0.000000	21.932098	4.007550	20.000000	2.000000	622.640259	54.128998	10.063831	20.000000	6.500000	622.800415	0.000000	0.000000
+#--- Temperature Compensation Channel ----------------------------------------------------																													
+#Compensation Channel [A Int. T1] - Fixed Temperature																													
+#Settings: n/a																													
+#Calibration: n/a																													
+#--- Measurement Data --------------------------------------------------------------------																													
+Date [A Ch.1 Main]	Time [A Ch.1 Main]	 dt (s) [A Ch.1 Main]	pH [A Ch.1 Main]	pH (pH) [A Ch.1 Main]	dphi (°) [A Ch.1 Main]	Signal Intensity (mV) [A Ch.1 Main]	Ambient Light (mV) [A Ch.1 Main]	ldev (nm) [A Ch.1 Main]	Status [A Ch.1 Main]	Date [A Ch.1 CompT]	Time [A Ch.1 CompT]	 dt (s) [A Ch.1 CompT]	Fixed Temp (°C) [A Ch.1 CompT]	Status [A Ch.1 CompT]	Date [Comment]	Time [Comment]	Comment												
+30-07-2020	14:13:58.372	0.017	7.983	7.983	29.270	290	-1	622.655	OK	30-07-2020	14:13:58.372	0.017	20.000	OK															
+30-07-2020	14:14:13.371	15.016	7.984	7.984	29.288	290	0	622.660	OK	30-07-2020	14:14:13.371	15.016	20.000	OK															
+30-07-2020	14:14:28.371	30.016	7.985	7.985	29.287	290	1	622.668	OK	30-07-2020	14:14:28.371	30.016	20.000	OK															
+30-07-2020	14:14:43.371	45.016	7.986	7.986	29.301	290	0	622.675	OK	30-07-2020	14:14:43.371	45.016	20.000	OK															
+30-07-2020	14:14:58.372	60.017	7.986	7.986	29.301	290	0	622.679	OK	30-07-2020	14:14:58.372	60.017	20.000	OK															
+30-07-2020	14:15:13.373	75.018	7.987	7.987	29.307	290	0	622.683	OK	30-07-2020	14:15:13.373	75.018	20.000	OK															
+30-07-2020	14:15:28.372	90.017	7.987	7.987	29.310	290	0	622.688	OK	30-07-2020	14:15:28.372	90.017	20.000	OK															
+30-07-2020	14:15:43.373	105.018	7.987	7.987	29.304	289	-1	622.692	OK	30-07-2020	14:15:43.373	105.018	20.000	OK															
+30-07-2020	14:15:58.373	120.018	7.986	7.986	29.285	289	0	622.698	OK	30-07-2020	14:15:58.373	120.018	20.000	OK															
+30-07-2020	14:16:13.373	135.018	7.987	7.987	29.301	289	0	622.703	OK	30-07-2020	14:16:13.373	135.018	20.000	OK															
+30-07-2020	14:16:28.372	150.017	7.987	7.987	29.293	289	0	622.711	OK	30-07-2020	14:16:28.372	150.017	20.000	OK															
+30-07-2020	14:16:43.377	165.022	7.988	7.988	29.310	289	0	622.712	OK	30-07-2020	14:16:43.377	165.022	20.000	OK															
+30-07-2020	14:16:58.373	180.018	7.989	7.989	29.316	289	0	622.718	OK	30-07-2020	14:16:58.373	180.018	20.000	OK															
