@@ -17,8 +17,13 @@ for file in file_list:
     data[file] = pd.read_table(fname, skiprows=20, encoding="unicode_escape")
 
 #%% rename headers in df inside dict
+rn = {
+      "Date [A Ch.1 Main]":"date",
+      "Time [A Ch.1 Main]":"time",
+      " dt (s) [A Ch.1 Main]":"sec",
+      "pH [A Ch.1 Main]":"pH",
+      "Fixed Temp (?C) [A Ch.1 CompT]":"temp"
+      }
+
 for file in file_list:
-    rn = {"Date [A Ch.1 Main]":"date", "Time [A Ch.1 Main]":"time",
-      " dt (s) [A Ch.1 Main]":"sec","pH [A Ch.1 Main]":"pH",
-      "Fixed Temp (?C) [A Ch.1 CompT]":"temp"}
-    data[file].rename(rn,inplace=True)
+    data[file].rename(rn, axis=1, inplace=True)
