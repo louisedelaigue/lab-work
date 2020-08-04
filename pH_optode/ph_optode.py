@@ -14,5 +14,5 @@ file_list = [file for file in os.listdir('.\data') if
 data = {} # tell python this is an empty dict so we can put the tables in
 for file in file_list:
     fname = ".\data\{}\{}.txt".format(file,file)
-    data[file] = pd.read_table(fname, skiprows=20)
-    
+    data[file] = pd.read_table(fname, skiprows=20, encoding="unicode_escape")
+     
