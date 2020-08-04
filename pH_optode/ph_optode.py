@@ -15,4 +15,10 @@ data = {} # tell python this is an empty dict so we can put the tables in
 for file in file_list:
     fname = ".\data\{}\{}.txt".format(file,file)
     data[file] = pd.read_table(fname, skiprows=20, encoding="unicode_escape")
-     
+
+#%% rename headers in df inside dict
+for file in file_list:
+    rn = {"Date [A Ch.1 Main]":"date", "Time [A Ch.1 Main]":"time",
+      " dt (s) [A Ch.1 Main]":"sec","pH [A Ch.1 Main]":"pH",
+      "Fixed Temp (?C) [A Ch.1 CompT]":"temp"}
+    data[file].rename(rn,inplace=True)
