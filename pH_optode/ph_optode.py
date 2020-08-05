@@ -16,7 +16,7 @@ data = {} # tell python this is an empty dict so we can put the tables in
 for file in file_list:
     fname = ".\data\{}\{}.txt".format(file,file)
     data[file] = pd.read_table(fname, skiprows=20, encoding="unicode_escape",
-                               na_values="nan")
+                               na_values='nan')
 
 #%% rename headers in df inside dict and get rid off empty columns
 rn = {
@@ -45,6 +45,7 @@ for file in file_list:
                     "Unnamed: 28",
                     "Unnamed: 29"],
                     inplace=True)
+    data[file].dropna()
 
 #%% plot pH vs. time
 for file in file_list:
