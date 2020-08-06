@@ -58,10 +58,13 @@ fig, ax = plt.subplots()
 for file in file_list:
     data[file].plot("sec", "pH", ax=ax)
 
-#%% average last two minutes and create a table
+#%% average last two minutes and create a 
+avg = pd.DataFrame({"filename":file_list})
+avg["average_pH"] = np.nan
+
 for file in file_list:
     L = data[file].sec>480
-    avg = data[file][L].mean()
+    avg.loc[avg.filename==file,"average_pH"] = data[file][L].pH.mean()
     
     
     
