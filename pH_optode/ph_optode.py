@@ -1,7 +1,7 @@
 # import toolbox
 import pandas as pd
 import os
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 # import spreadsheet
 db = pd.read_excel('.\lab_cs_instruments_config_mock.xlsx',
@@ -15,10 +15,9 @@ file_list = [file for file in os.listdir('.\data') if
 data = {} # tell python this is an empty dict so we can put the tables in
 for file in file_list:
     fname = ".\data\{}\{}.txt".format(file,file)
-    data[file] = pd.read_table(fname, skiprows=20, encoding="unicode_escape",
-                               na_values='nan')
+    data[file] = pd.read_table(fname, skiprows=20, encoding="unicode_escape")
 
-#%% rename headers in df inside dict and get rid off empty columns
+#%% rename headers of df inside dict and get rid off empty columns
 rn = {
       "Date [A Ch.1 Main]":"date",
       "Time [A Ch.1 Main]":"time",
@@ -48,5 +47,12 @@ for file in file_list:
     data[file].dropna()
 
 #%% plot pH vs. time
+#%% scatter each plot individually
 for file in file_list:
-    data[file].plot.scatter("time","pH")
+    data[file].plot.scatter("sec", "pH")
+
+#%% plot line each plot individually
+for file in file_list:
+    data[file].plot("sec", "pH")
+
+    
