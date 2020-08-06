@@ -47,12 +47,17 @@ for file in file_list:
     data[file].dropna()
 
 #%% plot pH vs. time
+
 #%% scatter each plot individually
 for file in file_list:
     data[file].plot.scatter("sec", "pH")
 
-#%% plot line each plot individually
+#%% plot line each file on same plot
+fig, ax = plt.subplots()
 for file in file_list:
-    data[file].plot("sec", "pH")
+    data[file].plot("sec", "pH", ax=ax)
+
+#%% average last two minutes and create a table
+
 
     
