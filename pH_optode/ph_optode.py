@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
 
 # import spreadsheet
 db = pd.read_excel('.\lab_cs_instruments_config_mock.xlsx',
@@ -66,5 +67,10 @@ for file in file_list:
     L = data[file].sec>480
     avg.loc[avg.filename==file,"average_pH"] = data[file][L].pH.mean()
     
-    
+#%% plot averages distribution
+fig, ax = plt.subplots()
+sns.despine(left=True)
+d = avg.average_pH
+#sns.distplot(d, kde=False, color="b", ax=ax)
+sns.jointplot(d,d, kind="hex", color="#4CB391")
     
