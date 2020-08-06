@@ -2,6 +2,7 @@
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
+import numpy as np
 
 # import spreadsheet
 db = pd.read_excel('.\lab_cs_instruments_config_mock.xlsx',
@@ -58,6 +59,9 @@ for file in file_list:
     data[file].plot("sec", "pH", ax=ax)
 
 #%% average last two minutes and create a table
-
-
+for file in file_list:
+    L = data[file].sec>480
+    avg = data[file][L].mean()
+    
+    
     
