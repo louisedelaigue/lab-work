@@ -4,22 +4,23 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+from sklearn.linear_model import LinearRegression
 
 # import spreadsheet
 db = pd.read_excel('.\lab_cs_instruments_config_mock.xlsx',
                    skiprows=[1])
 
-#%% create list of files we want to keep
+# create list of files we want to keep
 file_list = [file for file in os.listdir('.\data') if 
                   '_'.join(file.split('_')[2:]) in db.pH_optN.values]
 
-#%% create loop to extract data
+# create loop to extract data
 data = {} # tell python this is an empty dict so we can put the tables in
 for file in file_list:
     fname = ".\data\{}\{}.txt".format(file,file)
     data[file] = pd.read_table(fname, skiprows=20, encoding="unicode_escape")
 
-#%% rename headers of df inside dict and get rid off empty columns
+# rename headers of df inside dict and get rid off empty columns
 rn = {
       "Date [A Ch.1 Main]":"date",
       "Time [A Ch.1 Main]":"time",
@@ -57,14 +58,6 @@ for file in file_list:
 fig, ax = plt.subplots()
 for file in file_list:
     data[file].plot("sec", "pH", ax=ax)
-
-#%% average last two minutes and create a 
-avg = pd.DataFrame({"filename":file_list})
-avg["average_pH"] = np.nan
-
-for file in file_list:
-    L = data[file].sec>480
-    avg.loc[avg.filename==file,"average_pH"] = data[file][L].pH.mean()
     
 #%% jointplot of averages distribution
 fig, ax = plt.subplots()
@@ -74,10 +67,18 @@ d = avg.average_pH
 sns.jointplot(d,d, kind="hex", color="#4CB391")
 
 #%% STATS
-#%%
+#%% average last two minutes and create a table
+avg = pd.DataFrame({"filename":file_list})
+avg["average_pH"] = np.nan
 
-
+for file in file_list:
+    L = data[file].sec>480
+    avg.loc[avg.filename==file,"average_pH"] = data[file][L].pH.mean()
     
+#%% plot linear regression for all data points per sample
+sns.regplot(data[file_list[1]].sec, data[file_list[1]].pH, fit_reg=True)
+
+
 
 
 
