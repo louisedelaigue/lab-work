@@ -76,7 +76,9 @@ for file in file_list:
     avg.loc[avg.filename==file,"average_pH"] = data[file][L].pH.mean()
     
 #%% plot linear regression for all data points per sample
-sns.regplot(data[file_list[1]].sec, data[file_list[1]].pH, fit_reg=True)
+for file in file_list:
+    fig, ax = plt.subplots()
+    sns.regplot(data[file].sec, data[file].pH, fit_reg=True)
 
 
 
