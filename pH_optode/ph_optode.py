@@ -4,7 +4,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-from sklearn.linear_model import LinearRegression
+from scipy import stats
 
 # import spreadsheet
 db = pd.read_excel('.\lab_cs_instruments_config_mock.xlsx',
@@ -76,9 +76,14 @@ for file in file_list:
     avg.loc[avg.filename==file,"average_pH"] = data[file][L].pH.mean()
     
 #%% plot linear regression for all data points per sample
+# doing the math with scipy stats
+slope, intercept, r_value, p_value, std_err = stats.linregress(
+    data[file_list[0]].sec,data[file_list[0]].pH)
+ 
+#%% plotting the regression with seaborn
 for file in file_list:
     fig, ax = plt.subplots()
-    sns.regplot(data[file].sec, data[file].pH, fit_reg=True)
+    sns.regplot(data[file].sec, data[file].pH, fit_reg=True, x_ci="sd")
 
 
 
