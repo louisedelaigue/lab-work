@@ -48,8 +48,7 @@ for file in file_list:
                     inplace=True)
     data[file].dropna()
 
-#%% plot pH vs. time
-
+#%% PLOTTING
 #%% scatter each plot individually
 for file in file_list:
     data[file].plot.scatter("sec", "pH")
@@ -67,10 +66,19 @@ for file in file_list:
     L = data[file].sec>480
     avg.loc[avg.filename==file,"average_pH"] = data[file][L].pH.mean()
     
-#%% plot averages distribution
+#%% jointplot of averages distribution
 fig, ax = plt.subplots()
 sns.despine(left=True)
 d = avg.average_pH
 #sns.distplot(d, kde=False, color="b", ax=ax)
 sns.jointplot(d,d, kind="hex", color="#4CB391")
+
+#%% STATS
+#%%
+
+
     
+
+
+
+
