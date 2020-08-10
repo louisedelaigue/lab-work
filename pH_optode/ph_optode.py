@@ -49,7 +49,34 @@ for file in file_list:
                     inplace=True)
     data[file].dropna()
 
+
+#%% STATS
+#%% average last two minutes and create a table
+avg = pd.DataFrame({"filename":file_list})
+avg["average_pH"] = np.nan
+
+for file in file_list:
+    L = data[file].sec>480
+    avg.loc[avg.filename==file,"average_pH"] = data[file][L].pH.mean()
+    
+#%% plot linear regression for all data points per sample
+# doing the math with scipy stats
+def stats_pf(sec, pH):
+    """ Calculate stats for pH distrib until slope is closest to 0."""
+    return 
+    slope, intercept, r_value, p_value, std_err = stats.linregress(sec, pH)
+    while slope >= 0.00000001:
+        data[file_list[2]].iloc[1:]
+    else :
+        sns.regplot(sec, pH, fit_reg=True)
+
 #%% PLOTTING
+#%% plotting the regression with seaborn
+for file in file_list:
+    fig, ax = plt.subplots()
+    sns.regplot(data[file].sec, data[file].pH, fit_reg=True, x_ci="sd")
+    
+
 #%% scatter each plot individually
 for file in file_list:
     data[file].plot.scatter("sec", "pH")
@@ -65,26 +92,6 @@ sns.despine(left=True)
 d = avg.average_pH
 #sns.distplot(d, kde=False, color="b", ax=ax)
 sns.jointplot(d,d, kind="hex", color="#4CB391")
-
-#%% STATS
-#%% average last two minutes and create a table
-avg = pd.DataFrame({"filename":file_list})
-avg["average_pH"] = np.nan
-
-for file in file_list:
-    L = data[file].sec>480
-    avg.loc[avg.filename==file,"average_pH"] = data[file][L].pH.mean()
-    
-#%% plot linear regression for all data points per sample
-# doing the math with scipy stats
-slope, intercept, r_value, p_value, std_err = stats.linregress(
-    data[file_list[0]].sec,data[file_list[0]].pH)
- 
-#%% plotting the regression with seaborn
-for file in file_list:
-    fig, ax = plt.subplots()
-    sns.regplot(data[file].sec, data[file].pH, fit_reg=True, x_ci="sd")
-
 
 
 
