@@ -49,7 +49,6 @@ for file in file_list:
                     inplace=True)
     data[file].dropna()
 
-
 #%% STATS
 #%% average last two minutes and create a table
 avg = pd.DataFrame({"filename":file_list})
@@ -59,24 +58,30 @@ for file in file_list:
     L = data[file].sec>480
     avg.loc[avg.filename==file,"average_pH"] = data[file][L].pH.mean()\
                 
-#%% plot linear regression for all data points per sample
-# per sample
+#%% PER SAMPLE - Calculate a linear least-squares regression for two sets of measurements. 
 data_c = data
 slope, intercept, r_value, p_value, std_err = stats.linregress(
-    data_c[file_list[1]].sec, data_c[file_list[1]].pH)
+    data_c[file_list[2]].sec, data_c[file_list[2]].pH)
 
 while slope > 0:
     print("correcting...")
     slope, intercept, r_value, p_value, std_err = stats.linregress(
-    data_c[file_list[1]].sec, data_c[file_list[1]].pH)
-    data_c[file_list[1]] = data_c[file_list[1]].drop(data_c[file_list[1]].index[0])
-    data_c[file_list[1]].sort_values(by ='sec' )
+    data_c[file_list[2]].sec, data_c[file_list[2]].pH)
+    data_c[file_list[2]] = data_c[file_list[2]].drop(data_c[file_list[2]].index[0])
+    data_c[file_list[2]].sort_values(by ='sec' )
     if (slope < 0):
         break
     print(slope)
 
-sns.regplot(data_c[file_list[1]].sec, data_c[file_list[1]].pH,
+# plot regression
+sns.regplot(data_c[file_list[2]].sec, data_c[file_list[2]].pH,
                 fit_reg=True)
+
+# calculate the mean
+mean = data_c[file_list[2]].pH.mean()
+
+# calculate the median
+median = data_c[file_list[2]].pH.median()
 
 #%% PLOTTING
 #%% plotting the regression with seaborn
