@@ -60,26 +60,23 @@ for file in file_list:
     avg.loc[avg.filename==file,"average_pH"] = data[file][L].pH.mean()\
                 
 #%% plot linear regression for all data points per sample
-# doing the math with scipy stats
+# per sample
+data_c = data
 slope, intercept, r_value, p_value, std_err = stats.linregress(
-    data[file_list[2]].sec, data[file_list[2]].pH)
-while slope >= 0.00000001:
+    data_c[file_list[1]].sec, data_c[file_list[1]].pH)
+
+while slope > 0:
     print("correcting...")
     slope, intercept, r_value, p_value, std_err = stats.linregress(
-    data[file_list[2]].sec, data[file_list[2]].pH)
-    data[file_list[2]] = data[file_list[2]].drop(data[file_list[2]].index[0])
-    data[file_list[2]].sort_values(by ='sec' )
+    data_c[file_list[1]].sec, data_c[file_list[1]].pH)
+    data_c[file_list[1]] = data_c[file_list[1]].drop(data_c[file_list[1]].index[0])
+    data_c[file_list[1]].sort_values(by ='sec' )
+    if (slope < 0):
+        break
     print(slope)
 
-        
-        
-        
-        
-        
-        
-        
-        
-        
+sns.regplot(data_c[file_list[1]].sec, data_c[file_list[1]].pH,
+                fit_reg=True)
 
 #%% PLOTTING
 #%% plotting the regression with seaborn
