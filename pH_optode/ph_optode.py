@@ -57,18 +57,29 @@ avg["average_pH"] = np.nan
 
 for file in file_list:
     L = data[file].sec>480
-    avg.loc[avg.filename==file,"average_pH"] = data[file][L].pH.mean()
-    
+    avg.loc[avg.filename==file,"average_pH"] = data[file][L].pH.mean()\
+                
 #%% plot linear regression for all data points per sample
 # doing the math with scipy stats
-def stats_pf(sec, pH):
-    """ Calculate stats for pH distrib until slope is closest to 0."""
-    return 
-    slope, intercept, r_value, p_value, std_err = stats.linregress(sec, pH)
-    while slope >= 0.00000001:
-        data[file_list[2]].iloc[1:]
-    else :
-        sns.regplot(sec, pH, fit_reg=True)
+slope, intercept, r_value, p_value, std_err = stats.linregress(
+    data[file_list[2]].sec, data[file_list[2]].pH)
+while slope >= 0.00000001:
+    print("correcting...")
+    slope, intercept, r_value, p_value, std_err = stats.linregress(
+    data[file_list[2]].sec, data[file_list[2]].pH)
+    data[file_list[2]] = data[file_list[2]].drop(data[file_list[2]].index[0])
+    data[file_list[2]].sort_values(by ='sec' )
+    print(slope)
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
 #%% PLOTTING
 #%% plotting the regression with seaborn
@@ -76,7 +87,6 @@ for file in file_list:
     fig, ax = plt.subplots()
     sns.regplot(data[file].sec, data[file].pH, fit_reg=True, x_ci="sd")
     
-
 #%% scatter each plot individually
 for file in file_list:
     data[file].plot.scatter("sec", "pH")
