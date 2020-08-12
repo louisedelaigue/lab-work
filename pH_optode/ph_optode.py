@@ -83,27 +83,31 @@ mean = data_c[file_list[2]].pH.mean()
 # calculate the median
 median = data_c[file_list[2]].pH.median()
 
-#%% PLOTTING
-#%% plotting the regression with seaborn
-for file in file_list:
-    fig, ax = plt.subplots()
-    sns.regplot(data[file].sec, data[file].pH, fit_reg=True, x_ci="sd")
-    
-#%% scatter each plot individually
-for file in file_list:
-    data[file].plot.scatter("sec", "pH")
+#%% ALL SAMPLES - Calculate a linear least-squares regression for two sets of measurements. 
+data_c = data
+temp = pd.DataFrame({"filename":file_list})
+temp["slope"] = np.nan
+#temp["intercept"] = np.nan
+#temp["r_value"] = np.nan
+#temp["p_value"] = np.nan
+#temp["std_err"] = np.nan
 
-#%% plot line each file on same plot
-fig, ax = plt.subplots()
-for file in file_list:
-    data[file].plot("sec", "pH", ax=ax)
-    
-#%% jointplot of averages distribution
-fig, ax = plt.subplots()
-sns.despine(left=True)
-d = avg.average_pH
-#sns.distplot(d, kde=False, color="b", ax=ax)
-sns.jointplot(d,d, kind="hex", color="#4CB391")
+#for file in file_list:
+#    stats.linregress(data_c[file].sec, data_c[file].pH)
+#    temp.loc[temp.filename==file,"slope"] = 
+
+def get_slope(x, y):
+     """ Calculate a linear least-squares regression for two sets of measurements and record the slope."""
+     slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+     return slope
+
+temp.loc[temp.filename==file,"slope"] = get_slope(data_c[file].sec,
+                                                 data_c[file].pH)
+
+
+
+
+
 
 
 
