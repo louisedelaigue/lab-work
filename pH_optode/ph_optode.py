@@ -119,11 +119,17 @@ for file in file_list:
                 marker="o", color='r')
 
 # stats table
+temp["avg_pH_2min"] = np.nan
 temp["median"] = np.nan
 temp["mean"] = np.nan
-temp["diff"] = np.nan
+temp["median - mean"] = np.nan
+temp["avg_pH_2min - mean"] = np.nan
+
 for file in file_list:
+    L = data[file].sec>480
+    temp.loc[temp.filename==file,"avg_pH_2min"] = data[file][L].pH.mean()
     temp.loc[temp.filename==file,"median"] = data_c[file].pH.median()
     temp.loc[temp.filename==file,"mean"] = data_c[file].pH.mean()
-    temp.loc[temp.filename==file,"diff"] = temp["median"]- temp["mean"]
+    temp.loc[temp.filename==file,"median - mean"] = temp["median"]- temp["mean"]
+    temp.loc[temp.filename==file,"avg_pH_2min - mean"] = temp["avg_pH_2min"]- temp["mean"]
 
