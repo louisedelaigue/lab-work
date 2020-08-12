@@ -68,7 +68,7 @@ while slope > 0:
     slope, intercept, r_value, p_value, std_err = stats.linregress(
     data_c[file_list[2]].sec, data_c[file_list[2]].pH)
     data_c[file_list[2]] = data_c[file_list[2]].drop(data_c[file_list[2]].index[0])
-    data_c[file_list[2]].sort_values(by ='sec' )
+    data_c[file_list[2]].sort_values(by ='sec')
     if (slope < 0):
         break
     print(slope)
@@ -86,7 +86,7 @@ median = data_c[file_list[2]].pH.median()
 #%% ALL SAMPLES - Calculate a linear least-squares regression for two sets of measurements. 
 data_c = data
 temp = pd.DataFrame({"filename":file_list})
-temp["slope"] = np.nan
+#temp["slope"] = np.nan
 #temp["intercept"] = np.nan
 #temp["r_value"] = np.nan
 #temp["p_value"] = np.nan
@@ -101,13 +101,10 @@ def get_slope(x, y):
      slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
      return slope
 
-temp.loc[temp.filename==file,"slope"] = get_slope(data_c[file].sec,
+for file in file_list:
+    temp.loc[temp.filename==file,"slope"] = get_slope(data_c[file].sec,
                                                  data_c[file].pH)
-
-
-
-
-
+    
 
 
 
