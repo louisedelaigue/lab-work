@@ -49,6 +49,8 @@ for file in file_list:
                     inplace=True)
     data[file].dropna()
 
+data_c= data.copy()
+
 #%% STATS
 #%% average last two minutes and create a table
 avg = pd.DataFrame({"filename":file_list})
@@ -56,10 +58,9 @@ avg["average_pH"] = np.nan
 
 for file in file_list:
     L = data[file].sec>480
-    avg.loc[avg.filename==file,"average_pH"] = data[file][L].pH.mean()\
-                
+    avg.loc[avg.filename==file,"average_pH"] = data[file][L].pH.mean()
+        
 #%% PER SAMPLE - Calculate a linear least-squares regression for two sets of measurements. 
-data_c = data
 slope, intercept, r_value, p_value, std_err = stats.linregress(
     data_c[file_list[2]].sec, data_c[file_list[2]].pH)
 
@@ -69,7 +70,7 @@ while slope > 0:
     data_c[file_list[2]].sec, data_c[file_list[2]].pH)
     data_c[file_list[2]] = data_c[file_list[2]].drop(data_c[file_list[2]].index[0])
     data_c[file_list[2]].sort_values(by ='sec')
-    if (slope < 0):
+    if slope <= 0:
         break
     print(slope)
 
@@ -84,17 +85,7 @@ mean = data_c[file_list[2]].pH.mean()
 median = data_c[file_list[2]].pH.median()
 
 #%% ALL SAMPLES - Calculate a linear least-squares regression for two sets of measurements. 
-data_c = data
 temp = pd.DataFrame({"filename":file_list})
-#temp["slope"] = np.nan
-#temp["intercept"] = np.nan
-#temp["r_value"] = np.nan
-#temp["p_value"] = np.nan
-#temp["std_err"] = np.nan
-
-#for file in file_list:
-#    stats.linregress(data_c[file].sec, data_c[file].pH)
-#    temp.loc[temp.filename==file,"slope"] = 
 
 def get_slope(x, y):
      """ Calculate a linear least-squares regression for two sets of measurements and record the slope."""
@@ -104,9 +95,34 @@ def get_slope(x, y):
 for file in file_list:
     temp.loc[temp.filename==file,"slope"] = get_slope(data_c[file].sec,
                                                  data_c[file].pH)
-    
 
+#for index, row in temp.iterrows():
+for file in data_c[file]:
+    while temp["slope"].all() > 0:
+        print("correcting...")
+        for file in file_list:
+            temp.loc[temp.filename==file,"slope"] = get_slope(data_c[file].sec,
+                                                 data_c[file].pH)
+            data_c[file] = data_c[file].drop(data_c[file].index[0])
+            data_c[file].sort_values(by ='sec')
+    if (temp.slope.any() < 0):
+        break
+        print(temp.slope)
 
+#%% scatter
+for file in file_list:
+    fig, ax = plt.subplots()
+    sns.regplot(data_c[file].sec, data_c[file].pH, fit_reg=True, marker="o")
+    sns.regplot(data[file].sec, data[file].pH, fit_reg=True,
+                marker="+", color='r')
+
+temp["median"] = np.nan
+temp["mean"] = np.nan
+temp["diff"] = np.nan
+for file in file_list:
+    temp.loc[temp.filename==file,"median"] = data_c[file].pH.median()
+    temp.loc[temp.filename==file,"mean"] = data_c[file].pH.mean()
+    temp.loc[temp.filename==file,"diff"] = temp["median"]- temp["mean"]
 
 
 
