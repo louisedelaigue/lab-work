@@ -109,13 +109,16 @@ for file in data_c[file]:
         break
         print(temp.slope)
 
-#%% scatter
+#%% VISUALIZATION
+# graphs
+fig, ax = plt.subplots()
 for file in file_list:
-    fig, ax = plt.subplots()
-    sns.regplot(data_c[file].sec, data_c[file].pH, fit_reg=True, marker="o")
-    sns.regplot(data[file].sec, data[file].pH, fit_reg=True,
-                marker="+", color='r')
+    data[file].plot.scatter("sec", "pH", marker="+",
+                facecolors='none', color='b')
+    sns.regplot(data_c[file].sec, data_c[file].pH, fit_reg=True, ci=None,
+                marker="o", color='r')
 
+# stats table
 temp["median"] = np.nan
 temp["mean"] = np.nan
 temp["diff"] = np.nan
@@ -123,6 +126,4 @@ for file in file_list:
     temp.loc[temp.filename==file,"median"] = data_c[file].pH.median()
     temp.loc[temp.filename==file,"mean"] = data_c[file].pH.mean()
     temp.loc[temp.filename==file,"diff"] = temp["median"]- temp["mean"]
-
-
 
