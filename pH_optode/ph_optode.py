@@ -54,32 +54,47 @@ data_c = data.copy()
 #%% STATS      
 #%% PER SAMPLE - Calculate a linear least-squares regression for two sets of measurements. 
 data_c = data.copy()
-file = file_list[2]
-slope, intercept, r_value, p_value, std_err = stats.linregress(
-    data_c[file].sec, data_c[file].pH)
+for file in file_list: #[file_list[2]]:
 
-while slope > 0:
-    print("correcting...")
     slope, intercept, r_value, p_value, std_err = stats.linregress(
         data_c[file].sec, data_c[file].pH)
-    data_c[file] = data_c[file].drop(data_c[file].index[0])
-    data_c[file].sort_values(by ='sec')
-    # plot regression
+    
+    data[file]['slope_here'] = np.nan
+    for i in data[file].index[:-5]:
+        print("correcting...")
+        slope, intercept, r_value, p_value, std_err = stats.linregress(
+            data_c[file].sec, data_c[file].pH)
+        data_c[file] = data_c[file].drop(data_c[file].index[0])
+        data_c[file].sort_values(by ='sec')
+        # plot regression
+        #fig, ax = plt.subplots()
+        #sns.regplot(data_c[file].sec, data_c[file].pH,
+        #            fit_reg=True, ax=ax)
+        #ax.set_xlim([0, 600])
+        #ax.set_ylim([data[file].pH.min(),
+        #             data[file].pH.max()])
+        data[file].loc[i, 'slope_here'] = np.abs(slope)
+        print(slope)
+        
+    # find index of lowest abs slope
+    lowest_ix = data[file].slope_here.idxmin()
+    
+    # calculate the mean
+    mean = data[file].pH[lowest_ix:].mean()
+    
+    # calculate the median
+    median = data[file].pH[lowest_ix:].median()
+
     fig, ax = plt.subplots()
-    sns.regplot(data_c[file].sec, data_c[file].pH,
-                fit_reg=True, ax=ax)
-    ax.set_xlim([0, 600])
-    ax.set_ylim([data[file].pH.min(), data[file].pH.max()])
-    if slope <= 0:
-        break
-    print(slope)
+    data[file].plot.scatter('sec','slope_here', ax=ax)
+    ax.grid(alpha=0.3)
+    
+    fig, ax = plt.subplots()
+    data[file].plot.scatter('sec', 'pH', ax=ax)
+    data[file].loc[lowest_ix:].plot.scatter('sec','pH', ax=ax, c='r')
+    ax.axhline(mean, c='r')
+    ax.grid(alpha=0.3)
 
-
-# calculate the mean
-mean = data_c[file].pH.mean()
-
-# calculate the median
-median = data_c[file].pH.median()
 
 #%% ALL SAMPLES - Calculate a linear least-squares regression for two sets of measurements. 
 temp = pd.DataFrame({"filename":file_list})
