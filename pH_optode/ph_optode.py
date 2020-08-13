@@ -3,7 +3,6 @@ import pandas as pd
 import os
 import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sns
 from scipy import stats
 
 # import spreadsheet
@@ -49,15 +48,33 @@ for file in file_list:
                     inplace=True)
     data[file].dropna()
 
+# make a copy of data dict
 data_c = data.copy()
+
+# create table to hold results
 results = pd.DataFrame({"filename":file_list})
+results["pH_last2min_mean"] = np.nan
+results["pH_last2min_median"] = np.nan
+results["slope"] = np.nan
+results["lowest_ix"] = np.nan
+results["pH_s0_mean"] = np.nan
+results["pH_s0_median"] = np.nan
 
+# compute mean and median of last 2min of measurements using all datapoints
+for file in file_list:
+    L = data[file].sec>480
+    results.loc[results.filename==file,
+                "pH_last2min_mean"] = data[file][L].pH.mean()
+    results.loc[results.filename==file,
+                "pH_last2min_median"] = data[file][L].pH.median()
+
+# perform linear regression on all data
 for file in file_list: #[file_list[2]]:
-
     slope, intercept, r_value, p_value, std_err = stats.linregress(
-        data_c[file].sec, data_c[file].pH)
+        data_c[file].sec, data_c[file].pH)    
     
     data[file]['slope_here'] = np.nan
+    
     for i in data[file].index[:-5]:
         print("correcting...")
         slope, intercept, r_value, p_value, std_err = stats.linregress(
@@ -79,40 +96,31 @@ for file in file_list: #[file_list[2]]:
     
     # calculate the mean
     mean = data[file].pH[lowest_ix:].mean()
+        
+    fig, ax = plt.subplots(2,1)
+    data[file].plot.scatter('sec','slope_here', ax=ax[0])
+    ax[0].set_xlim([0, 600])
+    ax[0].set_ylim([data[file].slope_here.min(),
+                 data[file].slope_here.max()])
+    data[file].plot.scatter('sec', 'pH', ax=ax[1])
+    data[file].loc[lowest_ix:].plot.scatter('sec','pH', ax=ax[1], c='r')
+    ax[1].axhline(mean, c='r')
+    ax[1].set_xlim([0, 600])
+    ax[1].set_ylim([data[file].pH.min(),
+                 data[file].pH.max()])
     
-    # calculate the median
-    median = data[file].pH[lowest_ix:].median()
-
-    fig, ax = plt.subplots()
-    data[file].plot.scatter('sec','slope_here', ax=ax)
-    ax.grid(alpha=0.3)
+    # store index of lowest abs slope in df
+    results.loc[results.filename==file,
+                "lowest_ix"] = data[file].slope_here.idxmin()
     
-    fig, ax = plt.subplots()
-    data[file].plot.scatter('sec', 'pH', ax=ax)
-    data[file].loc[lowest_ix:].plot.scatter('sec','pH', ax=ax, c='r')
-    ax.axhline(mean, c='r')
-    ax.grid(alpha=0.3)
-
-#%% VISUALIZATION
-# graphs
-for file in file_list:
-    data[file].plot.scatter("sec", "pH", marker="+",
-                facecolors='none', color='b')
-    sns.regplot(data_c[file].sec, data_c[file].pH, fit_reg=True, ci=None,
-                marker="o", color='r')
-
-# stats table
-temp["avg_pH_2min"] = np.nan
-temp["median"] = np.nan
-temp["mean"] = np.nan
-temp["median - mean"] = np.nan
-temp["avg_pH_2min - mean"] = np.nan
-
-for file in file_list:
-    L = data[file].sec>480
-    temp.loc[temp.filename==file,"avg_pH_2min"] = data[file][L].pH.mean()
-    temp.loc[temp.filename==file,"median"] = data_c[file].pH.median()
-    temp.loc[temp.filename==file,"mean"] = data_c[file].pH.mean()
-    temp.loc[temp.filename==file,"median - mean"] = temp["median"]- temp["mean"]
-    temp.loc[temp.filename==file,"avg_pH_2min - mean"] = temp["avg_pH_2min"]- temp["mean"]
-
+    # store slope from lowest_ix in df
+    results.loc[results.filename==file,
+                "slope"] = data[file].slope_here[lowest_ix]
+    
+    # store the mean in df
+    results.loc[results.filename==file,
+                "pH_s0_mean"] = data[file].pH[lowest_ix:].mean()
+    
+    # store the median in df
+    results.loc[results.filename==file,
+                "pH_s0_median"] = data[file].pH[lowest_ix:].median()
