@@ -103,7 +103,6 @@ for file in data_c[file]:
 
 #%% VISUALIZATION
 # graphs
-fig, axes = plt.subplots(nrows=len(data), figsize=(20,5))
 for file in file_list:
     data[file].plot.scatter("sec", "pH", marker="+",
                 facecolors='none', color='b')
