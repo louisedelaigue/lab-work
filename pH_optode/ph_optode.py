@@ -96,7 +96,8 @@ for file in file_list: #[file_list[2]]:
     
     # calculate the mean
     mean = data[file].pH[lowest_ix:].mean()
-        
+    
+    # create 1 fig per sample w/ 2 subplots
     fig, ax = plt.subplots(2,1)
     data[file].plot.scatter('sec','slope_here', ax=ax[0])
     ax[0].set_xlim([0, 600])
