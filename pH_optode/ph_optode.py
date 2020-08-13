@@ -51,15 +51,7 @@ for file in file_list:
 
 data_c= data.copy()
 
-#%% STATS
-#%% average last two minutes and create a table
-avg = pd.DataFrame({"filename":file_list})
-avg["average_pH"] = np.nan
-
-for file in file_list:
-    L = data[file].sec>480
-    avg.loc[avg.filename==file,"average_pH"] = data[file][L].pH.mean()
-        
+#%% STATS      
 #%% PER SAMPLE - Calculate a linear least-squares regression for two sets of measurements. 
 slope, intercept, r_value, p_value, std_err = stats.linregress(
     data_c[file_list[2]].sec, data_c[file_list[2]].pH)
