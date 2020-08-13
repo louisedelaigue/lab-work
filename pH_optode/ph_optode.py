@@ -49,10 +49,11 @@ for file in file_list:
                     inplace=True)
     data[file].dropna()
 
-data_c= data.copy()
+data_c = data.copy()
 
 #%% STATS      
 #%% PER SAMPLE - Calculate a linear least-squares regression for two sets of measurements. 
+data_c = data.copy()
 file = file_list[2]
 slope, intercept, r_value, p_value, std_err = stats.linregress(
     data_c[file].sec, data_c[file].pH)
@@ -60,16 +61,19 @@ slope, intercept, r_value, p_value, std_err = stats.linregress(
 while slope > 0:
     print("correcting...")
     slope, intercept, r_value, p_value, std_err = stats.linregress(
-    data_c[file].sec, data_c[file].pH)
+        data_c[file].sec, data_c[file].pH)
     data_c[file] = data_c[file].drop(data_c[file].index[0])
     data_c[file].sort_values(by ='sec')
+    # plot regression
+    fig, ax = plt.subplots()
+    sns.regplot(data_c[file].sec, data_c[file].pH,
+                fit_reg=True, ax=ax)
+    ax.set_xlim([0, 600])
+    ax.set_ylim([data[file].pH.min(), data[file].pH.max()])
     if slope <= 0:
         break
     print(slope)
 
-# plot regression
-sns.regplot(data_c[file].sec, data_c[file].pH,
-                fit_reg=True)
 
 # calculate the mean
 mean = data_c[file].pH.mean()
