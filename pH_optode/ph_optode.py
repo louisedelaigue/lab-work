@@ -50,6 +50,7 @@ for file in file_list:
     data[file].dropna()
 
 data_c = data.copy()
+results = pd.DataFrame({"filename":file_list})
 
 for file in file_list: #[file_list[2]]:
 
