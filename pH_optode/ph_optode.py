@@ -53,28 +53,29 @@ data_c= data.copy()
 
 #%% STATS      
 #%% PER SAMPLE - Calculate a linear least-squares regression for two sets of measurements. 
+file = file_list[2]
 slope, intercept, r_value, p_value, std_err = stats.linregress(
-    data_c[file_list[2]].sec, data_c[file_list[2]].pH)
+    data_c[file].sec, data_c[file].pH)
 
 while slope > 0:
     print("correcting...")
     slope, intercept, r_value, p_value, std_err = stats.linregress(
-    data_c[file_list[2]].sec, data_c[file_list[2]].pH)
-    data_c[file_list[2]] = data_c[file_list[2]].drop(data_c[file_list[2]].index[0])
-    data_c[file_list[2]].sort_values(by ='sec')
+    data_c[file].sec, data_c[file].pH)
+    data_c[file] = data_c[file].drop(data_c[file].index[0])
+    data_c[file].sort_values(by ='sec')
     if slope <= 0:
         break
     print(slope)
 
 # plot regression
-sns.regplot(data_c[file_list[2]].sec, data_c[file_list[2]].pH,
+sns.regplot(data_c[file].sec, data_c[file].pH,
                 fit_reg=True)
 
 # calculate the mean
-mean = data_c[file_list[2]].pH.mean()
+mean = data_c[file].pH.mean()
 
 # calculate the median
-median = data_c[file_list[2]].pH.median()
+median = data_c[file].pH.median()
 
 #%% ALL SAMPLES - Calculate a linear least-squares regression for two sets of measurements. 
 temp = pd.DataFrame({"filename":file_list})
