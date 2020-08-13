@@ -51,9 +51,6 @@ for file in file_list:
 
 data_c = data.copy()
 
-#%% STATS      
-#%% PER SAMPLE - Calculate a linear least-squares regression for two sets of measurements. 
-data_c = data.copy()
 for file in file_list: #[file_list[2]]:
 
     slope, intercept, r_value, p_value, std_err = stats.linregress(
@@ -94,32 +91,6 @@ for file in file_list: #[file_list[2]]:
     data[file].loc[lowest_ix:].plot.scatter('sec','pH', ax=ax, c='r')
     ax.axhline(mean, c='r')
     ax.grid(alpha=0.3)
-
-
-#%% ALL SAMPLES - Calculate a linear least-squares regression for two sets of measurements. 
-temp = pd.DataFrame({"filename":file_list})
-
-def get_slope(x, y):
-     """ Calculate a linear least-squares regression for two sets of measurements and record the slope."""
-     slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-     return slope
-
-for file in file_list:
-    temp.loc[temp.filename==file,"slope"] = get_slope(data_c[file].sec,
-                                                 data_c[file].pH)
-
-#for index, row in temp.iterrows():
-for file in data_c[file]:
-    while temp["slope"].all() > 0:
-        print("correcting...")
-        for file in file_list:
-            temp.loc[temp.filename==file,"slope"] = get_slope(data_c[file].sec,
-                                                 data_c[file].pH)
-            data_c[file] = data_c[file].drop(data_c[file].index[0])
-            data_c[file].sort_values(by ='sec')
-    if (temp.slope.any() < 0):
-        break
-        print(temp.slope)
 
 #%% VISUALIZATION
 # graphs
