@@ -2,7 +2,23 @@
 Coding directed at processing raw lab data (inc. pH, DIC &amp; TA)
 
 ## pH optode
-
+### Raw pH data processing
+* _pH_optode.py_ : processes raw pH data acquired with a pH optode.
+Output gives:
+1. Graph per sample, inc. two subplots: 
+   1) evolution of the slope while cutting one datapoint at a time.
+   2) all pH datapoints (blue dots), datapoints used in computing the slope closest to 0 (red dots) and the mean from the latter (red line).
+2. Text file inc., per sample:
+   * "pH_raw_mean": mean of all raw pH datapoints, pre-processing.
+   * "pH_raw_median": median of all raw pH datapoints, pre-processing.
+   * "pH_last2min_mean": mean of pH datapoints during the last 2 min of measurement, pre-processing.
+   * "pH_last2min_median": median of pH datapoints during the last 2 min of measurement, pre-processing.
+   * "slope": slope closest to 0.
+   * "lowest_ix": index at which slope closest to 0 occurs (gives an idea of how many datapoints are used).
+   * "pH_s0_mean": mean pH only using datapoints giving the slope closest to 0, post-processing.
+   * "pH_s0_median": median pH only using datapoints giving the slope closest to 0, post-processing.
+   * "pH_s0_stderr": standard deviation of pH datapoints using only datapoints giving the slope closest to 0, post-processing.
+   * "pH_s0_intercept": intercept of pH datapoints using only datapoints giving the slope closest to 0, post-processing.
 
 ## VINDTA
 
