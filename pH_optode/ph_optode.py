@@ -72,8 +72,7 @@ for file in file_list:
     results.loc[results.filename==file,
                 "pH_last2min_median"] = data[file][L].pH.median()
 
-# perform linear regression on all data
-for file in file_list: #[file_list[2]]:
+    # perform linear regression on all data
     slope, intercept, r_value, p_value, std_err = stats.linregress(
         data_c[file].sec, data_c[file].pH)    
     
@@ -104,7 +103,7 @@ for file in file_list: #[file_list[2]]:
     # store the raw mean in df
     results.loc[results.filename==file,
                 "pH_raw_mean"] = data[file].pH.mean()
-    
+    # add in standard deviation here!
     # store the raw mean in df
     results.loc[results.filename==file,
                 "pH_raw_median"] = data[file].pH.median()
@@ -134,41 +133,47 @@ for file in file_list: #[file_list[2]]:
     results.loc[results.filename==file,
                 "pH_s0_intercept"] = stats.linregress(data[file].sec[lowest_ix:],
                                                    data[file].pH[lowest_ix:])[1]
-    
+
+results['lowest_ix'] = results.lowest_ix.astype(int)
+                                                      
+#%%
+for file in file_list:
     # create 1 fig per sample w/ 2 subplots
-    fig, ax = plt.subplots(2,1, figsize=(8, 6))
-    fig.tight_layout(pad=3, w_pad=2.0, h_pad=1.0)
+    fig, ax = plt.subplots(2,1, figsize=(8, 6), dpi=300)
+    # fig.tight_layout(pad=3, w_pad=2.0, h_pad=1.0)
     plt.rcParams.update({'font.size': 15})
     
     # subplot 1
     data[file].plot.scatter('sec','slope_here', c='xkcd:electric blue',
                             ax=ax[0])
     ax[0].set_xlim([0, 600])
-    ax[0].set_ylim([data[file].slope_here.min(),
-                 data[file].slope_here.max()])
+    # ax[0].set_ylim([data[file].slope_here.min(),
+                 # data[file].slope_here.max()])
+    ax[0].set_ylim(np.array([-1, 1]) * 5e-5)
+    ax[0].axhline(0, c='k', linewidth=0.8)
     ax[0].set_xlabel("")
     ax[0].set_ylabel('Slope')
     ax[0].set_title('Sample '+str(file.split('_')[2:]))
-    ax[0].yaxis.labelpad=10.0
+    # ax[0].yaxis.labelpad=10.0
     
     #subplot 2    
     data[file].plot.scatter('sec', 'pH', c='xkcd:electric blue', ax=ax[1])
-    data[file].loc[lowest_ix:].plot.scatter('sec','pH',  c='r',
+    data[file].loc[results[results.filename==file].lowest_ix.values[0]:].plot.scatter('sec','pH',  c='r',
                                             ax=ax[1])
-    ax[1].axhline(mean, c='r')
+    ax[1].axhline(results[results.filename==file].pH_s0_mean.values, c='r')
     ax[1].set_xlim([0, 600])
     ax[1].set_ylim([data[file].pH.min(),
                  data[file].pH.max()])
     ax[1].set_xlabel('Time (sec)')
     ax[1].set_ylabel('pH')
-    ax[1].xaxis.labelpad=10.0
-    ax[1].yaxis.labelpad=10.0
+    # ax[1].xaxis.labelpad=10.0
+    # ax[1].yaxis.labelpad=10.0
     
     # save image in high quality, png format
-    #filen = './results/{}.png'.format(file)
-    #plt.savefig(filen, dpi=300)
+    filen = './figures/ph_optode/{}.png'.format(file)
+    plt.savefig(filen)
+    plt.tight_layout()
     plt.show()
     
-    # save results as text file
-    results.to_csv('./results/results.txt', index=None, sep=' ')
-    
+# save results as text file
+results.to_csv('./results/results.csv', index=None)
