@@ -63,6 +63,7 @@ results["lowest_ix"] = np.nan
 results["pH_s0_mean"] = np.nan
 results["pH_s0_median"] = np.nan
 results["pH_s0_stderr"] = np.nan
+results["pH_s0_std"] = np.nan
 results["pH_s0_intercept"] = np.nan
 
 # compute mean and median of last 2min of measurements using all datapoints
@@ -100,6 +101,10 @@ for file in file_list:
     
     # calculate the mean
     mean = data[file].pH[lowest_ix:].mean()
+    
+    # store time for slope 0 in df
+    results.loc[results.filename==file,
+                "time"] = data[file].time[lowest_ix][:5]
          
     # store the raw mean in df
     results.loc[results.filename==file,
@@ -130,14 +135,15 @@ for file in file_list:
                 "pH_s0_stderr"] = stats.linregress(data[file].sec[lowest_ix:],
                                                    data[file].pH[lowest_ix:])[4]
     
+    # store the std for slope 0 in df
+    results.loc[results.filename==file,
+                "pH_s0_std"] = np.std(data[file].pH[lowest_ix:])
+    
     # store the intercept for slope 0 in df
     results.loc[results.filename==file,
                 "pH_s0_intercept"] = stats.linregress(data[file].sec[lowest_ix:],
                                                    data[file].pH[lowest_ix:])[1]
-                                                      
-    # store the intercept for slope 0 in df
-    results.loc[results.filename==file,
-                "time"] = data[file].time[lowest_ix]
+                                                          
                                                       
 results['lowest_ix'] = results.lowest_ix.astype(int)
                                                       
@@ -184,10 +190,15 @@ for file in file_list:
 results.to_csv('./results/results.csv', index=None)
 
 #%% create a graph showing all mean samples at slope closest to 0
-fig, ax = plt.subplots(figsize=(8, 6), dpi=300)
+fig, ax = plt.subplots(figsize=(15, 6), dpi=300)
 plt.rcParams.update({'font.size': 15})
-ax.scatter(results.time, results.pH_s0_mean)
-    
+ax.scatter(results.time, results.pH_s0_mean, c='xkcd:electric blue')
+ax.set_ylabel("pH")
+ax.yaxis.labelpad=15.0
+ax.set_xlabel("Time")
+ax.xaxis.labelpad=15.0    
+fig.suptitle('pH vs. time - all samples', fontsize=25, y=1.08)
+
 # save image in high quality, png format
 filen = './figures/ph_optode/all_samples_pH.png'
 plt.savefig(filen)
