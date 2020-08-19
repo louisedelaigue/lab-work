@@ -53,6 +53,7 @@ data_c = data.copy()
 
 # create table to hold results
 results = pd.DataFrame({"filename":file_list})
+results["time"] = np.nan
 results["pH_raw_mean"] = np.nan
 results["pH_raw_median"] = np.nan
 results["pH_last2min_mean"] = np.nan
@@ -133,10 +134,14 @@ for file in file_list:
     results.loc[results.filename==file,
                 "pH_s0_intercept"] = stats.linregress(data[file].sec[lowest_ix:],
                                                    data[file].pH[lowest_ix:])[1]
-
+                                                      
+    # store the intercept for slope 0 in df
+    results.loc[results.filename==file,
+                "time"] = data[file].time[lowest_ix]
+                                                      
 results['lowest_ix'] = results.lowest_ix.astype(int)
                                                       
-#%%
+#%% create figure with two subplots showing slope and pH measurement for each sample
 for file in file_list:
     # create 1 fig per sample w/ 2 subplots
     fig, ax = plt.subplots(2,1, figsize=(8, 6), dpi=300)
@@ -175,5 +180,19 @@ for file in file_list:
     plt.tight_layout()
     plt.show()
     
+# save results as text file
+results.to_csv('./results/results.csv', index=None)
+
+#%% create a graph showing all mean samples at slope closest to 0
+fig, ax = plt.subplots(figsize=(8, 6), dpi=300)
+plt.rcParams.update({'font.size': 15})
+ax.scatter(results.time, results.pH_s0_mean)
+    
+# save image in high quality, png format
+filen = './figures/ph_optode/all_samples_pH.png'
+plt.savefig(filen)
+plt.tight_layout()
+plt.show()
+
 # save results as text file
 results.to_csv('./results/results.csv', index=None)
