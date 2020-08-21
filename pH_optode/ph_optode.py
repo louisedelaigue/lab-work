@@ -6,7 +6,7 @@ import numpy as np
 from scipy import stats
 
 # import spreadsheet
-db = pd.read_excel('.\lab_cs_instruments_config_mock.xlsx',
+db = pd.read_excel('.\Aug_20_Wadden_sea_B1.xlsx',
                    skiprows=[1])
 
 # create list of files we want to keep
