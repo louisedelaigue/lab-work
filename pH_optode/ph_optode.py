@@ -109,7 +109,7 @@ for file in file_list:
     # store the raw mean in df
     results.loc[results.filename==file,
                 "pH_raw_mean"] = data[file].pH.mean()
-    # add in standard deviation here!
+    
     # store the raw mean in df
     results.loc[results.filename==file,
                 "pH_raw_median"] = data[file].pH.median()
