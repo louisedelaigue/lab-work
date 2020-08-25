@@ -137,7 +137,7 @@ for file in file_list:
     
     # store the std for slope 0 in df
     results.loc[results.filename==file,
-                "pH_s0_std"] = np.std(data[file].pH[lowest_ix:])
+                "pH_s0_std"] = (data[file].pH[lowest_ix:]).std()
     
     # store the intercept for slope 0 in df
     results.loc[results.filename==file,
@@ -151,7 +151,6 @@ results['lowest_ix'] = results.lowest_ix.astype(int)
 for file in file_list:
     # create 1 fig per sample w/ 2 subplots
     fig, ax = plt.subplots(2,1, figsize=(8, 6), dpi=300)
-    # fig.tight_layout(pad=3, w_pad=2.0, h_pad=1.0)
     plt.rcParams.update({'font.size': 15})
     
     # subplot 1
@@ -165,7 +164,6 @@ for file in file_list:
     ax[0].set_xlabel("")
     ax[0].set_ylabel('Slope')
     ax[0].set_title('Sample '+str(file.split('_')[2:]))
-    # ax[0].yaxis.labelpad=10.0
     
     #subplot 2    
     data[file].plot.scatter('sec', 'pH', c='xkcd:electric blue', ax=ax[1])
@@ -177,13 +175,11 @@ for file in file_list:
                  data[file].pH.max()])
     ax[1].set_xlabel('Time (sec)')
     ax[1].set_ylabel('pH')
-    # ax[1].xaxis.labelpad=10.0
-    # ax[1].yaxis.labelpad=10.0
     
     # save image in high quality, png format
+    plt.tight_layout()
     filen = './figures/ph_optode/{}.png'.format(file)
     plt.savefig(filen)
-    plt.tight_layout()
     plt.show()
     
 # save results as text file
@@ -194,15 +190,13 @@ fig, ax = plt.subplots(figsize=(15, 6), dpi=300)
 plt.rcParams.update({'font.size': 15})
 ax.scatter(results.time, results.pH_s0_mean, c='xkcd:electric blue')
 ax.set_ylabel("pH")
-ax.yaxis.labelpad=15.0
 ax.set_xlabel("Time")
-ax.xaxis.labelpad=15.0    
 fig.suptitle('pH vs. time - all samples', fontsize=25, y=1.08)
 
 # save image in high quality, png format
+plt.tight_layout()
 filen = './figures/ph_optode/all_samples_pH.png'
 plt.savefig(filen)
-plt.tight_layout()
 plt.show()
 
 #%% save results as text file
