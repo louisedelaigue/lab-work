@@ -126,7 +126,6 @@ def process_ph(file_path):
         # store the intercept for slope 0 in df
         results.loc[results.filename==file,
                     "pH_s0_intercept"] = stats.linregress(data[file].sec[lowest_ix:],
-                                                       data[file].pH[lowest_ix:])[1]                
-        results['lowest_ix'] = results.lowest_ix.astype(int)
+                                                       data[file].pH[lowest_ix:])[1]  
     # save results as text file
     results.to_csv('./results/results.csv', index=None)
