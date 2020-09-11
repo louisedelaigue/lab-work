@@ -1,3 +1,4 @@
+# Paths relative to location of this script
 import pickle, pandas as pd
 
 # Import data
@@ -33,6 +34,6 @@ def get_station_bottle_data(row):
     )
 
 
-# Apply the function to the whole table to get the data and save as new CSV
+# Apply the function to the whole table to get the data, then save as new CSV
 optode = optode.join(optode.apply(get_station_bottle_data, axis=1))
 optode.to_csv(optode_file + "_comparison.csv")
