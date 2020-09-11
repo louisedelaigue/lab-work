@@ -1,9 +1,9 @@
 # Paths relative to location of this script
-import pickle, pandas as pd
+import pandas as pd
 
 # Import data
-with open("data_rws/data1_v7.pkl", "rb") as f:
-    data = pickle.load(f)[0]
+data = pd.read_csv('./data_rws/data_v7.csv',
+                   skiprows=[1])
 optode_file = "data_rws/result_RWS_01_11"
 optode = pd.read_csv(optode_file + ".csv")
 
@@ -37,3 +37,4 @@ def get_station_bottle_data(row):
 # Apply the function to the whole table to get the data, then save as new CSV
 optode = optode.join(optode.apply(get_station_bottle_data, axis=1))
 optode.to_csv(optode_file + "_comparison.csv")
+
