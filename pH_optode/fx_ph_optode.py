@@ -12,7 +12,7 @@ def process_ph(file_path, results_file_path_and_name):
                        skiprows=[1])
     # create list of files we want to keep
     file_list = [file for file in os.listdir('.\data') if 
-                      '_'.join(file.split('_')[2:]) in db.pH_optN.values]
+                      '_'.join(file.split('_')) in db.pH_optN.values]
     # create loop to extract data
     data = {} # tell python this is an empty dict so we can put the tables in
     for file in file_list:
