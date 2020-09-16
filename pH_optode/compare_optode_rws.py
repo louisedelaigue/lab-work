@@ -52,13 +52,13 @@ sns.lineplot(x=x_values, y=y_values, ax=ax[1], color="black")
 sns.lineplot(x=x_values, y=y_values, ax=ax[2], color="black")
 
 sns.scatterplot(x="pH_s0_mean", y="pH_calc12_total_20", 
-                hue="diff_opt_calc",  s=120,
+                hue="diff_opt_calc",  s=150,
                 palette="ch:r=-.2,d=.3_r", data=datac, ax=ax[0])
 sns.scatterplot(x="pH_s0_mean", y="pH_spectro_total_20", 
-                hue="diff_opt_spec", s=120,
+                hue="diff_opt_spec", s=150,
                 palette="ch:r=-.2,d=.3_r", data=datac, ax=ax[1])
 sns.scatterplot(x="pH_s0_mean", y="pH_vindta_total_20", 
-                hue="diff_opt_vindta", s=120,
+                hue="diff_opt_vindta", s=150,
                 palette="ch:r=-.2,d=.3_r", data=datac, ax=ax[2])
 
 plt.tight_layout()
