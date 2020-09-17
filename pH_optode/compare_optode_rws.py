@@ -260,5 +260,56 @@ plt.tight_layout()
 plt.savefig('./figures/comp_eq_time.png', format = 'png')
 plt.show()
 
+#%% compare time_to_eq = 20 vs time_to_eq = 30 for 5 samples
+data20 = pd.read_csv('./results/results_rws_20_comparison.csv',
+                   skiprows=[1])
+data30 = pd.read_csv('./results/results_rws_30_comparison.csv',
+                   skiprows=[1])
+data20.bottle = datac.bottle.astype(str)
+data30.bottle = datac.bottle.astype(str)
+data20["name"] = np.nan
+data30["name"] = np.nan
+data20["name"] = data20["station"] +"_"+ data20["bottle"]
+data30["name"] = data30["station"] +"_"+ data30["bottle"]
+
+data20 = data20.sort_values(by = "name")
+data30 = data30.sort_values(by = "name")
+
+# value diff between 20min and 30min
+diff = pd.DataFrame()
+diff["name"] = data20.name[data20.time_to_eq == 30]
+diff["diff"] = np.abs(data20.pH_s0_mean[data20.time_to_eq == 30] - data30.pH_s0_mean[data30.time_to_eq == 30])
+diff = diff.dropna()
+diff = diff.sort_values(by = "name")
+
+# prep plot 
+f, ax = plt.subplots(figsize=(20, 6.5), dpi=300)
+sns.set_style("darkgrid")
+sns.set_context("paper", font_scale=2)
+sns.set(font="Verdana", font_scale=1)
+sns.despine(f, left=True, bottom=True)
+
+# plotting
+sns.lineplot(x="name", y="pH_s0_mean", color="xkcd:cyan",linewidth=3,
+             marker="o", data=data20[data20.time_to_eq == 30], 
+             label= "20-min", ax=ax)
+
+sns.lineplot(x="name", y="pH_s0_mean", color="xkcd:blue violet",linewidth=3,
+             marker="o", data=data30[data20.time_to_eq == 30], 
+             label="30-min", ax=ax)
+
+# axis labels
+ax.set_ylabel("$pH_{optode}$ @ 20°C")
+ax.set_xlabel("")
+plt.xticks(rotation=45)
+
+# legend
+ax.legend()
+
+plt.tight_layout()
+
+# save plot
+plt.savefig('./figures/20min_vs_30min.png', format = 'png')
+plt.show()
 
 
