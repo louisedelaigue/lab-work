@@ -201,3 +201,64 @@ plt.tight_layout()
 # save plot
 plt.savefig('./figures/diff_vs_time.png', format = 'png')
 plt.show()
+
+#%% plot to compare diff vs time_to_eq
+f, ax = plt.subplots(1, 3, figsize=(20, 6.5), dpi=300)
+sns.set_style("darkgrid")
+sns.set_context("paper", font_scale=1)
+sns.set(font="Verdana", font_scale=1)
+sns.despine(f, left=True, bottom=True)
+
+# line through origin
+x = [7.70, 7.70]
+y = [8.20, 8.20]
+x_values = [x[0], y[0]]
+y_values = [x[1], y[1]]
+
+# scattering
+ax1 = sns.lineplot(x=x_values, y=y_values, ax=ax[0], color="black")
+ax2 = sns.lineplot(x=x_values, y=y_values, ax=ax[1], color="black")
+ax3 = sns.lineplot(x=x_values, y=y_values, ax=ax[2], color="black")
+
+sns.regplot(x="pH_s0_mean", y="pH_calc12_total_20", color="xkcd:cyan",
+                data=datac[datac.time_to_eq == 20], ci=None,
+                label="20-min", ax=ax[0])
+sns.regplot(x="pH_s0_mean", y="pH_calc12_total_20", color="xkcd:blue violet",
+                data=datac[datac.time_to_eq == 30], ci=None,
+                label="30-min", ax=ax[0])
+
+sns.regplot(x="pH_s0_mean", y="pH_spectro_total_20", color="xkcd:cyan",
+                data=datac[datac.time_to_eq == 20], ci=None,
+                label="20-min", ax=ax[1])
+sns.regplot(x="pH_s0_mean", y="pH_spectro_total_20", color="xkcd:blue violet",
+                data=datac[datac.time_to_eq == 30], ci=None,
+                label="30-min", ax=ax[1])
+
+sns.regplot(x="pH_s0_mean", y="pH_vindta_total_20", color="xkcd:cyan",
+                data=datac[datac.time_to_eq == 20], ci=None,
+                label="20-min", ax=ax[2])
+sns.regplot(x="pH_s0_mean", y="pH_vindta_total_20", color="xkcd:blue violet",
+                data=datac[datac.time_to_eq == 30], ci=None,
+                label="30-min", ax=ax[2])
+
+# axis labels
+ax1.set_xlabel("$pH_{optode}$ @ 20°C")
+ax2.set_xlabel("$pH_{optode}$ @ 20°C")
+ax3.set_xlabel("$pH_{optode}$ @ 20°C")
+ax1.set_ylabel("$pH_{calc}$ @ 20°C")
+ax2.set_ylabel("$pH_{spectro}$ @ 20°C")
+ax3.set_ylabel("$pH_{VINDTA}$ @ 20°C")
+
+# legend
+ax1.legend(loc="upper left")
+ax2.legend(loc="upper left")
+ax3.legend(loc="upper left")
+
+plt.tight_layout()
+
+# save plot
+plt.savefig('./figures/comp_eq_time.png', format = 'png')
+plt.show()
+
+
+
