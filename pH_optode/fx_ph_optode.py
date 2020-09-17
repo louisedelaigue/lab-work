@@ -49,7 +49,18 @@ def process_ph(file_path, results_file_path_and_name):
     data_c = data.copy()
     # create table to hold results
     results = pd.DataFrame({"filename":file_list})
+    results["analysis_date"] = np.nan
     results["time"] = np.nan
+    results["location"] = np.nan
+    results["T_room"] = np.nan
+    results["T_bath"] = np.nan
+    results["dPhi_4"] = np.nan
+    results["dPhi_10"] = np.nan
+    results["offset"] = np.nan
+    results["pH_CRM_calc"] = np.nan
+    results["pH_opt"] = np.nan
+    results["time_to_eq"] = np.nan
+    results["flag"] = np.nan
     results["pH_raw_mean"] = np.nan
     results["pH_raw_median"] = np.nan
     results["pH_last2min_mean"] = np.nan
@@ -124,5 +135,28 @@ def process_ph(file_path, results_file_path_and_name):
         results.loc[results.filename==file,
                     "pH_s0_intercept"] = stats.linregress(data[file].sec[lowest_ix:],
                                                        data[file].pH[lowest_ix:])[1]  
+        # store rest of info
+        results.loc[results.filename==file,
+                    "analysis_date"] = db.analysis_date
+        results.loc[results.filename==file,
+                    "location"] = db.location
+        results.loc[results.filename==file,
+                    "T_room"] = db.T_room
+        results.loc[results.filename==file,
+                    "T_bath"] = db.T_bath
+        results.loc[results.filename==file,
+                    "dPhi_4"] = db.dPhi_4
+        results.loc[results.filename==file,
+                    "dPhi_10"] = db.dPhi_10
+        results.loc[results.filename==file,
+                    "offset"] = db.offset
+        results.loc[results.filename==file,
+                    "pH_CRM_calc"] = db.pH_CRM_calc
+        results.loc[results.filename==file,
+                    "pH_opt"] = db.pH_opt
+        results.loc[results.filename==file,
+                    "time_to_eq"] = db.time_to_eq
+        results.loc[results.filename==file,
+                    "flag"] = db.flag
     # save results as text file
     results.to_csv(results_file_path_and_name, index=None)

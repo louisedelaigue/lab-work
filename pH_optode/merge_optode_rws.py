@@ -1,10 +1,14 @@
 # Paths relative to location of this script
 import pandas as pd
+import numpy as np
+
+# process pH optode data
+process_ph("./data/RWS_01_11.xlsx", "./results/results_rws.csv")
 
 # Import data
 data = pd.read_csv('./data_rws/data_v7.csv',
                    skiprows=[1])
-optode_file = "data_rws/result_RWS_01_11"
+optode_file = "./results/results_rws"
 optode = pd.read_csv(optode_file + ".csv")
 
 
@@ -18,10 +22,11 @@ def get_station_bottle_data(row):
         "pH_vindta_total_20",  # from the VINDTA TA titration (1st point, before acid)
     ]
     name_split = row.filename.split("_")[2:]
-    if len(name_split) == 2:
+    if (len(name_split) == 2) & (row.location != "CRM"):
         station = name_split[0]
         bottle = int(name_split[1])
         d = (data.station == station) & (data.bottleid == bottle)
+        print(row.filename)
         assert sum(d) == 1
         pH_data = {col: data[d][col].values[0] for col in pH_cols}
         data_index = data.index[d].values[0]
@@ -36,5 +41,5 @@ def get_station_bottle_data(row):
 
 # Apply the function to the whole table to get the data, then save as new CSV
 optode = optode.join(optode.apply(get_station_bottle_data, axis=1))
+optode = optode.replace(r'^\s*$', np.nan, regex=True)
 optode.to_csv(optode_file + "_comparison.csv")
-

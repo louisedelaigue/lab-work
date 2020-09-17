@@ -1,4 +1,3 @@
-# run merge_optode_rws.py first
 # import toolbox
 import pandas as pd
 import numpy as np
@@ -6,8 +5,12 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib
 
+# run other scripts
+exec(open("fx_ph_optode.py").read())
+exec(open("merge_optode_rws.py").read())
+
 # import data 
-datac = pd.read_csv('./results/rws_1609_comparison.csv',
+datac = pd.read_csv('./results/results_rws_comparison.csv',
                    skiprows=[1])
 #datac = datac.drop(datac.tail(1).index) # systematically drops last CRM
 
@@ -28,16 +31,17 @@ datac["diff_opt_calc"] = datac["pH_s0_mean"] - datac["pH_calc12_total_20"]
 datac["diff_opt_spec"] = datac["pH_s0_mean"] - datac["pH_spectro_total_20"]
 datac["diff_opt_vindta"] = datac["pH_s0_mean"] - datac["pH_vindta_total_20"]
 
-# remove CRM and outlier
+# remove CRM and outliers (according to lab flags)
 indexCRM = datac[datac["name"] == "CRM_CRM"].index
 datac.drop(indexCRM, inplace = True)
-indexO = datac[datac["name"] == "WALCRN20_2020005960.0"].index
-datac.drop(indexO, inplace = True)
+L = (datac.flag == 2)
+datac = datac[L]
 
 #%% scatterplot
 f, ax = plt.subplots(1, 3, figsize=(20, 6.5))
 sns.set_style("darkgrid")
 sns.set_context("paper")
+sns.color_palette("viridis")
 sns.set(font="Verdana")
 sns.despine(f, left=True, bottom=True)
 
@@ -52,13 +56,10 @@ sns.lineplot(x=x_values, y=y_values, ax=ax[1], color="black")
 sns.lineplot(x=x_values, y=y_values, ax=ax[2], color="black")
 
 sns.scatterplot(x="pH_s0_mean", y="pH_calc12_total_20", 
-                hue="diff_opt_calc",  s=150,
-                palette="ch:r=-.2,d=.3_r", data=datac, ax=ax[0])
+                hue="diff_opt_calc",  s=150, data=datac, ax=ax[0])
 sns.scatterplot(x="pH_s0_mean", y="pH_spectro_total_20", 
-                hue="diff_opt_spec", s=150,
-                palette="ch:r=-.2,d=.3_r", data=datac, ax=ax[1])
+                hue="diff_opt_spec", s=150, data=datac, ax=ax[1])
 sns.scatterplot(x="pH_s0_mean", y="pH_vindta_total_20", 
-                hue="diff_opt_vindta", s=150,
-                palette="ch:r=-.2,d=.3_r", data=datac, ax=ax[2])
+                hue="diff_opt_vindta", s=150, data=datac, ax=ax[2])
 
 plt.tight_layout()
