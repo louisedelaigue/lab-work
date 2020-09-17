@@ -41,8 +41,8 @@ datac = datac[L]
 f, ax = plt.subplots(1, 3, figsize=(20, 6.5))
 sns.set_style("darkgrid")
 sns.set_context("paper")
-sns.color_palette("viridis")
-sns.set(font="Verdana")
+#sns.color_palette("viridis")
+sns.set(font="Verdana", font_scale=1)
 sns.despine(f, left=True, bottom=True)
 
 # line through origin
@@ -51,15 +51,29 @@ y = [8.20, 8.20]
 x_values = [x[0], y[0]]
 y_values = [x[1], y[1]]
 
-sns.lineplot(x=x_values, y=y_values, ax=ax[0], color="black")
-sns.lineplot(x=x_values, y=y_values, ax=ax[1], color="black")
-sns.lineplot(x=x_values, y=y_values, ax=ax[2], color="black")
+# scattering
+ax1 = sns.lineplot(x=x_values, y=y_values, ax=ax[0], color="black")
+ax2 = sns.lineplot(x=x_values, y=y_values, ax=ax[1], color="black")
+ax3 = sns.lineplot(x=x_values, y=y_values, ax=ax[2], color="black")
 
-sns.scatterplot(x="pH_s0_mean", y="pH_calc12_total_20", 
-                hue="diff_opt_calc",  s=150, data=datac, ax=ax[0])
-sns.scatterplot(x="pH_s0_mean", y="pH_spectro_total_20", 
+sns.scatterplot(x="pH_s0_mean", y="pH_calc12_total_20", palette = "cool",
+                hue="diff_opt_calc", s=150, data=datac, ax=ax[0])
+sns.scatterplot(x="pH_s0_mean", y="pH_spectro_total_20", palette = "cool",
                 hue="diff_opt_spec", s=150, data=datac, ax=ax[1])
-sns.scatterplot(x="pH_s0_mean", y="pH_vindta_total_20", 
+sns.scatterplot(x="pH_s0_mean", y="pH_vindta_total_20", palette = "cool",
                 hue="diff_opt_vindta", s=150, data=datac, ax=ax[2])
+
+# axis labels
+ax1.set_xlabel("$pH_{slope_0}$ @ 20°C")
+ax2.set_xlabel("$pH_{slope_0}$ @ 20°C")
+ax3.set_xlabel("$pH_{slope_0}$ @ 20°C")
+ax1.set_ylabel("$pH_{calc}$ @ 20°C")
+ax2.set_ylabel("$pH_{spectro}$ @ 20°C")
+ax3.set_ylabel("$pH_{VINDTA}$ @ 20°C")
+
+# legend 
+for ax in ax:
+    L = ax.legend()
+    L.get_texts()[0].set_text("Difference")
 
 plt.tight_layout()
