@@ -330,12 +330,12 @@ ax1 = sns.lineplot(x=x_values, y=y_values, ax=ax[0], color="black")
 ax2 = sns.lineplot(x=x_values, y=y_values, ax=ax[1], color="black")
 ax3 = sns.lineplot(x=x_values, y=y_values, ax=ax[2], color="black")
 
-sns.scatterplot(x="pH_s0_mean", y="diff_opt_calc", color="xkcd:cyan",
-                s=150, data=datac, ax=ax[0])
-sns.scatterplot(x="pH_s0_mean", y="diff_opt_spec", color="xkcd:fuchsia",
-                s=150, data=datac, ax=ax[1])
-sns.scatterplot(x="pH_s0_mean", y="diff_opt_vindta", color="xkcd:blue violet",
-                s=150, data=datac, ax=ax[2])
+sns.regplot(x="pH_s0_mean", y="diff_opt_calc", color="xkcd:cyan",
+            data=datac, fit_reg=True, marker='o', ci=None, ax=ax[0])
+sns.regplot(x="pH_s0_mean", y="diff_opt_spec", color="xkcd:fuchsia",
+            data=datac, fit_reg=True, marker='o', ci=None, ax=ax[1])
+sns.regplot(x="pH_s0_mean", y="diff_opt_vindta", color="xkcd:blue violet",
+            data=datac, fit_reg=True, marker='o', ci=None, ax=ax[2])
 
 # axis labels
 ax1.set_xlabel("$pH_{optode}$ @ 20°C")
