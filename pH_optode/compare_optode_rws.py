@@ -312,4 +312,43 @@ plt.tight_layout()
 plt.savefig('./figures/20min_vs_30min.png', format = 'png')
 plt.show()
 
+#%% pH diff vs pH opt
+f, ax = plt.subplots(1, 3, figsize=(20, 6.5), dpi=300)
+sns.set_style("darkgrid")
+sns.set_context("paper", font_scale=2)
+sns.set(font="Verdana", font_scale=1)
+sns.despine(f, left=True, bottom=True)
+
+# line through origin
+x = [7.70, -0.04]
+y = [8.15, 0.02]
+x_values = [x[0], y[0]]
+y_values = [x[1], y[1]]
+
+# scattering
+ax1 = sns.lineplot(x=x_values, y=y_values, ax=ax[0], color="black")
+ax2 = sns.lineplot(x=x_values, y=y_values, ax=ax[1], color="black")
+ax3 = sns.lineplot(x=x_values, y=y_values, ax=ax[2], color="black")
+
+sns.scatterplot(x="pH_s0_mean", y="diff_opt_calc", color="xkcd:cyan",
+                s=150, data=datac, ax=ax[0])
+sns.scatterplot(x="pH_s0_mean", y="diff_opt_spec", color="xkcd:fuchsia",
+                s=150, data=datac, ax=ax[1])
+sns.scatterplot(x="pH_s0_mean", y="diff_opt_vindta", color="xkcd:blue violet",
+                s=150, data=datac, ax=ax[2])
+
+# axis labels
+ax1.set_xlabel("$pH_{optode}$ @ 20°C")
+ax2.set_xlabel("$pH_{optode}$ @ 20°C")
+ax3.set_xlabel("$pH_{optode}$ @ 20°C")
+ax1.set_ylabel("$∆pH_{calc}$ @ 20°C")
+ax2.set_ylabel("$∆pH_{spectro}$ @ 20°C")
+ax3.set_ylabel("$∆pH_{VINDTA}$ @ 20°C")
+
+plt.tight_layout()
+
+# save plot
+plt.savefig('./figures/scatter_diff_pH_opt.png', format = 'png')
+plt.show()
+
 
