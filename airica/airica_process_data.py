@@ -51,7 +51,6 @@ db["CF_4f"] = np.nan
 batch_list = db["analysis_batch"].tolist()
 batch_list = list(dict.fromkeys(batch_list))
 
-#%%
 def get_CF(db):
     """ Calculate conversion factor CF for each analysis batch."""
     db.CF_3 = (crm_val*db.density*db.sample_v)/db.area_av_3
@@ -64,3 +63,5 @@ def get_CF(db):
     })
 
 db_cf = db.groupby(by=["analysis_batch"]).apply(get_CF)
+
+# apply CRM CF to samples, per analysis batch
