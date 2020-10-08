@@ -44,6 +44,8 @@ db["area_av_3"] = (db.area_1+db.area_2+db.area_3)/3
 # create columns to hold conversion factor (CF) values
 db["CF_3"] = np.nan
 db["CF_4"] = np.nan
+db["CF_3f"] = np.nan
+db["CF_4f"] = np.nan
 
 # calc CRM coeff factor
 batch_list = db["analysis_batch"].tolist()
@@ -52,13 +54,13 @@ batch_list = list(dict.fromkeys(batch_list))
 #%%
 def get_CF(db):
     """ Calculate conversion factor CF for each analysis batch."""
-    CF_3 = (crm_val*db.density*db.sample_v)/db.area_av_3
-    CF_4 = (crm_val*db.density*db.sample_v)/db.area_av_4
+    db.CF_3 = (crm_val*db.density*db.sample_v)/db.area_av_3
+    db.CF_4 = (crm_val*db.density*db.sample_v)/db.area_av_4
+    CF_3f = db.loc[db["location"] == "CRM", "CF_3"].mean()
+    CF_4f = db.loc[db["location"] == "CRM", "CF_4"].mean()
     return pd.Series({
-    "date": db.analysis_date,
-    "analysis_batch": db.analysis_batch,
-    "CF_3": CF_3,
-    "CF_4": CF_4,
+    "CF_3f": CF_3f,
+    "CF_4f": CF_4f,
     })
 
 db_cf = db.groupby(by=["analysis_batch"]).apply(get_CF)
