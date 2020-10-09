@@ -60,32 +60,14 @@ def get_CF(db):
 
 db_cf = db.groupby(by=["analysis_batch"]).apply(get_CF)
 
-# apply the right CRM CF to samples
+# assign a CRM CF to samples based on analysis batch
+db["CF_3"] = db_cf.loc[db.analysis_batch.values, 'CF_3f'].values
+db["CF_4"] = db_cf.loc[db.analysis_batch.values, 'CF_4f'].values
+
+# calculate TCO2 values
 db["TCO2_3"] = np.nan
 db["TCO2_4"] = np.nan
 
-#%%
-batch_list = db["analysis_batch"].tolist()
-for batch in batch_list:
-    db[batch]["CF_3"] = db_cf[batch==db.analysis_batch.values]["CF_3f"]
+db["TCO2_3"] = (db.CF_3*db.area_av_3)/(db.density*db.sample_v)
+db["TCO2_4"] = (db.CF_4*db.area_av_4)/(db.density*db.sample_v)
 
-#%% NOTHING WORKS BELOW
-def assign_CF(db):
-    """ Assign CF to rows based on their analysis batch."""
-    return db_cf.npwhere(db_cf.analysis_batch==db.analysis_batch).CF_3f
-
-db["CF_3"] = db["analysis_batch"].apply(assign_CF)
-
-sample_list = db["name"].tolist()
-batch_list = db["analysis_batch"].tolist()
-#batch_list = list(dict.fromkeys(batch_list))
-
-for sample in sample_list:
-        db["TCO2_3"] = (db_cf.CF_3f*db.area_av_3)/(db.density*db.sample_v)
-
-for batch in batch_list:
-    db.loc[db.analysis_batch==batch, "TCO2_3"] = (
-        db_cf[db_cf.analysis_batch==batch].CF_3f*db[db.analysis_batch==batch].area_av_3)/(
-            db[db.analysis_batch==batch].density*db[db.analysis_batch==batch].sample_v)
-
-            
