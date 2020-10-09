@@ -35,7 +35,8 @@ if db["name"].equals(db["bottle"]):
     print("SUCCESSFUL DBS IMPORT")
     db = db.drop(columns=["bottle"])
 else:
-    print("ERROR: dbs names don't match xlsx names")
+    KeyError
+    print("ERROR: mismatch between dbs and xlsx files")
 
 # average areas with all areas and only last 3 areas
 db["area_av_4"] = (db.area_1+db.area_2+db.area_3+db.area_4)/4
@@ -44,13 +45,8 @@ db["area_av_3"] = (db.area_1+db.area_2+db.area_3)/3
 # create columns to hold conversion factor (CF) values
 db["CF_3"] = np.nan
 db["CF_4"] = np.nan
-db["CF_3f"] = np.nan
-db["CF_4f"] = np.nan
 
 # calc CRM coeff factor
-batch_list = db["analysis_batch"].tolist()
-batch_list = list(dict.fromkeys(batch_list))
-
 def get_CF(db):
     """ Calculate conversion factor CF for each analysis batch."""
     db.CF_3 = (crm_val*db.density*db.sample_v)/db.area_av_3
@@ -64,4 +60,32 @@ def get_CF(db):
 
 db_cf = db.groupby(by=["analysis_batch"]).apply(get_CF)
 
-# apply CRM CF to samples, per analysis batch
+# apply the right CRM CF to samples
+db["TCO2_3"] = np.nan
+db["TCO2_4"] = np.nan
+
+#%%
+batch_list = db["analysis_batch"].tolist()
+for batch in batch_list:
+    db[batch]["CF_3"] = db_cf[batch==db.analysis_batch.values]["CF_3f"]
+
+#%% NOTHING WORKS BELOW
+def assign_CF(db):
+    """ Assign CF to rows based on their analysis batch."""
+    return db_cf.npwhere(db_cf.analysis_batch==db.analysis_batch).CF_3f
+
+db["CF_3"] = db["analysis_batch"].apply(assign_CF)
+
+sample_list = db["name"].tolist()
+batch_list = db["analysis_batch"].tolist()
+#batch_list = list(dict.fromkeys(batch_list))
+
+for sample in sample_list:
+        db["TCO2_3"] = (db_cf.CF_3f*db.area_av_3)/(db.density*db.sample_v)
+
+for batch in batch_list:
+    db.loc[db.analysis_batch==batch, "TCO2_3"] = (
+        db_cf[db_cf.analysis_batch==batch].CF_3f*db[db.analysis_batch==batch].area_av_3)/(
+            db[db.analysis_batch==batch].density*db[db.analysis_batch==batch].sample_v)
+
+            
