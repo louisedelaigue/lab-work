@@ -3,8 +3,8 @@ Coding directed at processing raw lab data (inc. pH, DIC &amp; TA)
 
 ## pH optode
 ### Raw pH data processing
-* _fx_ph_optode.py_ : processes raw pH data acquired with a pH optode.
-Output gives a text file inc. the folllowing:
+_fx_ph_optode.py_ : processes raw pH data acquired with a pH optode.
+#### Output gives a text file inc. the folllowing:
    * "pH_raw_mean": mean of all raw pH datapoints, pre-processing.
    * "pH_raw_median": median of all raw pH datapoints, pre-processing.
    * "pH_last2min_mean": mean of pH datapoints during the last 2 min of measurement, pre-processing.
