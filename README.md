@@ -23,6 +23,31 @@ Output gives:
 ## AIRICA
 ### Raw AIRICA data processing
 * _fx_airica.py_ : processes raw DIC data acquired with an AIRICA from Marianda.
+Input is a .xlsx file inc. the following:
+   * "bottled_date": date of sampling.
+   * "analysis_date": date of analysis.
+   * "opened_date": date at which a bottle was opened (applicable to CRMs if not using a new bottle).
+   * "analysis_batch": batch number assigned to each sample based on day of analysis - batch number for a given sample should match that of the CRM calibration it belongs to.
+   * "location": part 1 of sample name (mostly applicable to RWS samples).
+   * "sample": sample number.
+   * "name": location + sample number.
+   * "measurement_t": AIRICA total measurement time.
+   * "preacid_t": AIRICA waiting time before acid addition.
+   * "postacid_t": AIRICA waiting time after acid addition.
+   * "extra_time": AIRICA extra time.
+   * "sample_v": sample volume used by AIRICA for sample measurement.
+   * "rinsing_v": sample volume used by AIRICA to rinse the cell.
+   * "filling_speed": speed at which the Kloehn delivers the sample to the AIRICA cell for measurement.
+   * "rinsing_speed": speed at which the Kloehn delivers the sample to the AIRICA cell for rinsing.
+   * "pumping_speed": speed at which the Kloehn pumps the sample directly from the bottle.
+   * "acid_strokes": number of acid strokes delivered to the AIRICA cell.
+   * "nb_of_rinses": number of times the AIRICA cell gets rinsed.
+   * "rinsing_method": chosen rinsing method for the AIRICA cell.
+   * "database_name": name of the database selected in the AIRICA software.
+   * "file_name": name of individual sample file name.
+   * "flag": attributed to samples depending on measurement unwinding.
+   * "comments": comments.
+   
 Output gives a text file, inc. the following:
    * "temperature": temperature recorded at the time of measurement.
    * "salinity": salinity given to the AIRICA software.
