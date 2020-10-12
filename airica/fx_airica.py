@@ -11,6 +11,11 @@ def process_airica(crm_val, xlsx_filepath, dbs_filepath,
     # import ".xlsx" file
     db = pd.read_excel(xlsx_filepath, skiprows=[1])
     
+    # remove bad flag values
+    db = db.reset_index()
+    L = (db.flag == 2)
+    db = db[L]
+    
     # extract data from dbs
     mapper_dbs = {
     "run type": "run_type",
@@ -55,11 +60,6 @@ def process_airica(crm_val, xlsx_filepath, dbs_filepath,
     # add ".dbs" data to ".xlsx"
     db = pd.merge(left=db, right=data, how='left',
                   left_on='name', right_on='bottle')
-    
-    # remove bad flag values
-    db = db.reset_index()
-    L = (db.flag == 2)
-    db = db[L]
     
     # check that ".dbs" bottle = ".xlsx" name and drop "bottle" column
     if db["name"].equals(db["bottle"]):
