@@ -50,3 +50,11 @@ ax.text(1850, 2350, text, horizontalalignment='left',
 # save figure
 plt.savefig('./figures/scatter_3areas_vs_4areas.png', format = 'png')
 plt.show()
+
+#%% stats given duplicate samples
+stats = pd.DataFrame()
+stats['CRM_std_err1_3'] = np.nan
+
+# standard error per analysis batch
+L = (db.analysis_batch == 1) & (db.location == 'CRM')
+stats['CRM_std_err1_3'] = sem(db.TCO2_3[L])

@@ -7,7 +7,7 @@ def process_airica(crm_val, xlsx_filepath, dbs_filepath,
                    results_file_path_and_name):
     # import ".xlsx" file
     db = pd.read_excel(xlsx_filepath, skiprows=[1])
-    L = db.flag == 2
+    L = (db.flag == 2)
     db = db[L]
     db = db.reset_index()
     
@@ -76,7 +76,7 @@ def process_airica(crm_val, xlsx_filepath, dbs_filepath,
     
     # average areas with all areas and only last 3 areas
     db["area_av_4"] = (db.area_1+db.area_2+db.area_3+db.area_4)/4
-    db["area_av_3"] = (db.area_1+db.area_2+db.area_3)/3
+    db["area_av_3"] = (db.area_2+db.area_3+db.area_4)/3
     
     # create columns to hold conversion factor (CF) values
     db["CF_3"] = np.nan
