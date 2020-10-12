@@ -4,6 +4,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib
+from scipy import stats
 
 # run other scripts
 exec(open("fx_ph_optode.py").read())
@@ -80,6 +81,20 @@ plt.tight_layout()
 # save plot
 plt.savefig('./figures/scatter_all_methods.png', format = 'png')
 plt.show()
+
+# calc stats linregress
+# create mask
+mask1 = ~np.isnan(datac.pH_s0_mean) & ~np.isnan(datac.pH_spectro_total_20)
+mask2 = ~np.isnan(datac.pH_s0_mean) & ~np.isnan(datac.pH_calc12_total_20)
+mask3 = ~np.isnan(datac.pH_s0_mean) & ~np.isnan(datac.pH_vindta_total_20)
+
+# calc R2
+r2_0_spectro = stats.linregress(datac.pH_s0_mean[mask1],
+                                datac.pH_spectro_total_20[mask1])[2]  
+r2_0_calc = stats.linregress(datac.pH_s0_mean[mask2],
+                             datac.pH_calc12_total_20[mask2])[2] 
+r2_0_vindta = stats.linregress(datac.pH_s0_mean[mask3],
+                               datac.pH_vindta_total_20[mask3])[2] 
 
 #%% scatterplot all methods on same plot per station
 f, ax = plt.subplots(figsize=(20, 6.5), dpi=300)
