@@ -4,6 +4,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib
+from scipy import stats
 
 # import data
 exec(open("airica_process_data.py").read())
@@ -27,12 +28,20 @@ ax.set_ylim([1800,2400])
 
 # scattering
 ax = sns.lineplot(x=x_values, y=y_values, ax=ax, color="black")
-sns.regplot(data=db, x="TCO2_3", y="TCO2_4", color="xkcd:primary blue")
+sns.regplot(data=db, x="TCO2_3", y="TCO2_4", ci=False, color="xkcd:primary blue")
+
+# add R2 to graph
+mask = ~np.isnan(db.TCO2_3) & ~np.isnan(db.TCO2_4)
+r2 = stats.linregress(db.TCO2_3[mask], db.TCO2_4[mask])[2]
+r2s = str(round(r2, 2))
+text = "$R^2$ = " + r2s
 
 # formatting
 plt.tight_layout()
 ax.set_xlabel("$DIC_{3 AREAS}$")
 ax.set_ylabel("$DIC_{4 AREAS}$")
+ax.text(1850, 2350, text, horizontalalignment='left',
+        verticalalignment='center', fontsize=15)
 
 # save figure
 plt.savefig('./figures/scatter_3areas_vs_4areas.png', format = 'png')
