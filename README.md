@@ -23,7 +23,7 @@ Output gives:
 ## AIRICA
 ### Raw AIRICA data processing
 * _fx_airica.py_ : processes raw DIC data acquired with an AIRICA from Marianda.
-Input is a .xlsx file inc. the following:
+#### Input is a .xlsx file inc. the following:
    * "bottled_date": date of sampling.
    * "analysis_date": date of analysis.
    * "opened_date": date at which a bottle was opened (applicable to CRMs if not using a new bottle).
@@ -48,7 +48,7 @@ Input is a .xlsx file inc. the following:
    * "flag": attributed to samples depending on measurement unwinding.
    * "comments": comments.
    
-Output gives a text file, inc. the following:
+#### Output gives a text file, inc. the following:
 
    * "temperature": temperature recorded at the time of measurement.
    * "salinity": salinity given to the AIRICA software.
