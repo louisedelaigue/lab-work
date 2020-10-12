@@ -49,6 +49,7 @@ Input is a .xlsx file inc. the following:
    * "comments": comments.
    
 Output gives a text file, inc. the following:
+
    * "temperature": temperature recorded at the time of measurement.
    * "salinity": salinity given to the AIRICA software.
    * "density": computed by the AIRICA software.
