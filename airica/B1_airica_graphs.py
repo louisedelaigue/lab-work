@@ -7,7 +7,7 @@ import matplotlib
 from scipy import stats
 
 # import data
-exec(open("fx_airica.py").read())
+exec(open("B1_fx_airica.py").read())
 process_airica(2012.59, './data/Aug_20_Wadden_sea_B1_AIRICA.xlsx',
               './data/LD_B1.dbs', './results_rws.csv')
 db = pd.read_csv('./results_rws.csv',
