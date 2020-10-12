@@ -5,11 +5,16 @@ from matplotlib import dates as mdates
 
 def process_airica(crm_val, xlsx_filepath, dbs_filepath,
                    results_file_path_and_name):
+    """ Process AIRICA raw data by extracting data from .dbs file and 
+    adding it to .xlsx file, calculating conversion factor from CRMs and
+    computing TCO2 values."""
     # import ".xlsx" file
     db = pd.read_excel(xlsx_filepath, skiprows=[1])
+    
+    # remove bad flag values
+    db = db.reset_index()
     L = (db.flag == 2)
     db = db[L]
-    db = db.reset_index()
     
     # extract data from dbs
     mapper_dbs = {
