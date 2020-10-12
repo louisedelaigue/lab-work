@@ -10,8 +10,7 @@ from scipy import stats
 exec(open("B1_fx_airica.py").read())
 process_airica(2012.59, './data/RWS_01_11_DIC.xlsx',
               './data/LDRWS1.dbs', './results_rws.csv')
-db = pd.read_csv('./results_rws.csv',
-                   skiprows=[1])
+db = pd.read_csv('./results_rws.csv')
 
 #%% scatterplot 3 areas vs 4 areas
 f, ax = plt.subplots(figsize=(8, 6.5), dpi=300)
