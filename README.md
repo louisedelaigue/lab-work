@@ -3,12 +3,8 @@ Coding directed at processing raw lab data (inc. pH, DIC &amp; TA)
 
 ## pH optode
 ### Raw pH data processing
-* _pH_optode.py_ : processes raw pH data acquired with a pH optode.
-Output gives:
-1. Graph per sample, inc. two subplots: 
-   1) evolution of the slope while cutting one datapoint at a time.
-   2) all pH datapoints (blue dots), datapoints used in computing the slope closest to 0 (red dots) and the mean from the latter (red line).
-2. Text file inc., per sample:
+* _fx_ph_optode.py_ : processes raw pH data acquired with a pH optode.
+Output gives a text file inc. the folllowing:
    * "pH_raw_mean": mean of all raw pH datapoints, pre-processing.
    * "pH_raw_median": median of all raw pH datapoints, pre-processing.
    * "pH_last2min_mean": mean of pH datapoints during the last 2 min of measurement, pre-processing.
@@ -22,7 +18,7 @@ Output gives:
 
 ## AIRICA
 ### Raw AIRICA data processing
-* _fx_airica.py_ : processes raw DIC data acquired with an AIRICA from Marianda.
+_fx_airica.py_ : processes raw DIC data acquired with an AIRICA from Marianda.
 #### Input is a .xlsx file inc. the following:
    * "bottled_date": date of sampling.
    * "analysis_date": date of analysis.
