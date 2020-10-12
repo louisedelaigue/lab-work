@@ -28,7 +28,7 @@ Output gives:
    * "analysis_date": date of analysis.
    * "opened_date": date at which a bottle was opened (applicable to CRMs if not using a new bottle).
    * "analysis_batch": batch number assigned to each sample based on day of analysis - batch number for a given sample should match that of the CRM calibration it belongs to.
-   * "location": part 1 of sample name (mostly applicable to RWS samples).
+   * "location": sample name (mostly applicable to RWS samples).
    * "sample": sample number.
    * "name": location + sample number.
    * "measurement_t": AIRICA total measurement time.
