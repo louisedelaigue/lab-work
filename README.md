@@ -20,6 +20,20 @@ Output gives:
    * "pH_s0_stderr": standard deviation of pH datapoints using only datapoints giving the slope closest to 0, post-processing.
    * "pH_s0_intercept": intercept of pH datapoints using only datapoints giving the slope closest to 0, post-processing.
 
+## AIRICA
+### Raw AIRICA data processing
+* _fx_airica.py_ : processes raw pH data acquired with a pH optode.
+Output gives a text file, inc. the following:
+   * "temperature": temperature recorded at the time of measurement.
+   * "salinity": salinity given to the AIRICA software.
+   * "density": computed by the AIRICA software.
+   * "mass_sample": mass of each sample computed by the AIRICA software.
+   * "time": time of measurement.
+   * "area_x" (x = 1, 2, 3 or 4): area under the curve of AIRICA integration.
+   * "area_av_x" (x = 3 or 4): average area using the last 3 or all 4 areas computed by the AIRICA software.
+   * "CF_x" (x = 3 or 4): conversion factor computed from the CRMs, using either the last 3 or all 4 areas computed by the AIRICA software.
+   * "TCO2_x" (x = 3 or 4): final DIC value, calculated either from CF_3 or CF_4.
+
 ## VINDTA
 
 ### Data
