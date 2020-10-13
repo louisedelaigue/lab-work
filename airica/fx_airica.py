@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 from matplotlib import dates as mdates
-
+from scipy import stats
 
 def seawater_1atm_MP81(temperature=25, salinity=35):
     """Seawater density at 1 atm in kg/l following MP81.
@@ -84,7 +84,6 @@ def process_airica(crm_val, db, dbs_filepath,
     computing TCO2 values.
     """
     
-    
     # import ".dbs" file
     data = read_dbs(dbs_filepath)
     
@@ -100,43 +99,53 @@ def process_airica(crm_val, db, dbs_filepath,
         KeyError
         print("ERROR: mismatch between dbs and xlsx files")
     
+    # recalculate density
+    db['density_analysis'] = np.nan
+    db['density_analysis'] = seawater_1atm_MP81(db.temperature,
+                                                db.salinity_rws)
+    
     # average areas with all areas and only last 3 areas
     db["area_av_4"] = (db.area_1+db.area_2+db.area_3+db.area_4)/4
     db["area_av_3"] = (db.area_2+db.area_3+db.area_4)/3
     
+    # calculate DIC * density * sample_v
+    db["CT_d_sample_v"] = crm_val*db.density_analysis*db.sample_v
+    
     # create columns to hold conversion factor (CF) values
-    db["CF_3"] = np.nan
-    db["CF_4"] = np.nan
+    db["a_3"] = np.nan
+    db["a_4"] = np.nan
+    db["b_3"] = np.nan
+    db["b_4"] = np.nan
     
     # calc CRM coeff factor
     def get_CF(db):
         """Calculate conversion factor CF for each analysis batch."""
-        db.CF_3 = (crm_val*db.density*db.sample_v)/db.area_av_3
-        db.CF_4 = (crm_val*db.density*db.sample_v)/db.area_av_4
-        CF_3f = db.loc[db["location"] == "CRM", "CF_3"].mean()
-        CF_4f = db.loc[db["location"] == "CRM", "CF_4"].mean()
+        L = (db.location == "CRM")
+        a_3 = stats.linregress(db.area_av_3[L], db.CT_d_sample_v[L])[1]
+        a_4 = stats.linregress(db.area_av_4[L], db.CT_d_sample_v[L])[1]
+        b_3 = stats.linregress(db.area_av_3[L], db.CT_d_sample_v[L])[0]
+        b_4 = stats.linregress(db.area_av_4[L], db.CT_d_sample_v[L])[0]
         return pd.Series({
-            "CF_3f": CF_3f,
-            "CF_4f": CF_4f,
+            "a_3": a_3,
+            "a_4": a_4,
+            "b_3": b_3,
+            "b_4": b_4
         })
-    
-    
-    # CRMs
-    # k * area = CO2(mol)
-    # a + b * area = CO2(mol)
-    
+        
     db_cf = db.groupby(by=["analysis_batch"]).apply(get_CF)
     
-    # assign a CRM CF to samples based on analysis batch
-    db["CF_3"] = db_cf.loc[db.analysis_batch.values, 'CF_3f'].values
-    db["CF_4"] = db_cf.loc[db.analysis_batch.values, 'CF_4f'].values
+    # assign CRM a and b to samples based on analysis batch
+    db["a_3"] = db_cf.loc[db.analysis_batch.values, 'a_3'].values
+    db["a_4"] = db_cf.loc[db.analysis_batch.values, 'a_4'].values
+    db["b_3"] = db_cf.loc[db.analysis_batch.values, 'b_3'].values
+    db["b_4"] = db_cf.loc[db.analysis_batch.values, 'b_4'].values
     
     # calculate TCO2 values
     db["TCO2_3"] = np.nan
     db["TCO2_4"] = np.nan
     
-    db["TCO2_3"] = (db.CF_3*db.area_av_3)/(db.density*db.sample_v)
-    db["TCO2_4"] = (db.CF_4*db.area_av_4)/(db.density*db.sample_v)
+    db["TCO2_3"] = ((db.b_3*db.area_av_3)+db.a_3)/(db.density_analysis*db.sample_v)
+    db["TCO2_4"] = ((db.b_4*db.area_av_4)+db.a_4)/(db.density_analysis*db.sample_v)
     
     # save results as text file
     db.to_csv(results_file_path_and_name, index=None)
