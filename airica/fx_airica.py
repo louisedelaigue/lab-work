@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 from matplotlib import dates as mdates
 from scipy import stats
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 def seawater_1atm_MP81(temperature=25, salinity=35):
     """Seawater density at 1 atm in kg/l following MP81.
@@ -121,10 +123,8 @@ def process_airica(crm_val, db, dbs_filepath,
     def get_CF(db):
         """Calculate conversion factor CF for each analysis batch."""
         L = (db.location == "CRM")
-        a_3 = stats.linregress(db.area_av_3[L], db.CT_d_sample_v[L])[1]
-        a_4 = stats.linregress(db.area_av_4[L], db.CT_d_sample_v[L])[1]
-        b_3 = stats.linregress(db.area_av_3[L], db.CT_d_sample_v[L])[0]
-        b_4 = stats.linregress(db.area_av_4[L], db.CT_d_sample_v[L])[0]
+        b_3, a_3 = stats.linregress(db.area_av_3[L], db.CT_d_sample_v[L])[:2]
+        b_4, a_4 = stats.linregress(db.area_av_3[L], db.CT_d_sample_v[L])[:2]
         return pd.Series({
             "a_3": a_3,
             "a_4": a_4,
@@ -146,6 +146,27 @@ def process_airica(crm_val, db, dbs_filepath,
     
     db["TCO2_3"] = ((db.b_3*db.area_av_3)+db.a_3)/(db.density_analysis*db.sample_v)
     db["TCO2_4"] = ((db.b_4*db.area_av_4)+db.a_4)/(db.density_analysis*db.sample_v)
+    
+    # plot regression
+    f, ax = plt.subplots(figsize=(8, 6.5), dpi=300)
+    sns.set_style("darkgrid")
+    sns.set_context("paper", font_scale=2)
+    sns.set(font="Verdana", font_scale=1)
+    sns.despine(f, left=True, bottom=True)
+    
+    L = (db.location == "CRM")
+    sns.regplot(x=db.area_av_3[L], y=db.CT_d_sample_v[L],
+                ci=False, color="xkcd:primary blue")
+
+    # add R2 to graph
+    r2 = stats.linregress(db.area_av_3[L], db.CT_d_sample_v[L])[2]
+    r2s = str(round(r2, 2))
+    text = "$R^2$ = " + r2s
+    ax.text(30000,4500000, text, horizontalalignment='left',
+        verticalalignment='center', fontsize=15)
+
+    
+    plt.tight_layout()
     
     # save results as text file
     db.to_csv(results_file_path_and_name, index=None)
