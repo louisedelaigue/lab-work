@@ -1,4 +1,4 @@
-import pandas as pd, numpy as np, seaborn as sns, calkulate as calk
+import pandas as pd, seaborn as sns, calkulate as calk
 import matplotlib.pyplot as plt
 import PyCO2SYS as pyco2
 from scipy import stats
