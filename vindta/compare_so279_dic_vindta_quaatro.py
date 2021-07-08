@@ -161,7 +161,6 @@ ax.set_xlabel('$DIC_{QuAAtro}$ / μmol/kg')
 ax.set_ylabel('$DIC_{VINDTA}$ / μmol/kg')
 
 # Save plot
-plt.tight_layout()
 plt.savefig('./figs/compare_so279_dic_vindta_quaatro_linregress.png')
 
 # === FUNCTION OF TEMPERATURE
