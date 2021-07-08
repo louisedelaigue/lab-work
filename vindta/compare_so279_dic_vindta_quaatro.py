@@ -1,4 +1,8 @@
 import pandas as pd, numpy as np, seaborn as sns, calkulate as calk
+import matplotlib.pyplot as plt
+import PyCO2SYS as pyco2
+from scipy import stats
+
 
 # === VINDTA DATA
 # Import VINDTA DIC values
@@ -16,7 +20,7 @@ rn = {
 vindta.rename(rn, axis=1, inplace=True)
 
 # Only keep DIC values that aren't nan
-L = vindta['DIC_vindta'] == np.nan
+L = vindta['DIC_vindta'].isnull()
 vindta = vindta[~L]
 
 # === QUAATRO DATA
@@ -84,7 +88,73 @@ quaatro['niskin'] = pd.to_numeric(quaatro['niskin'])
 df = pd.merge(vindta, quaatro, on=['station', 'niskin'], how='left')
 
 # === CONVERT QUAATRO DIC units from uM/Lto uM/kg
-# Calculate density for each sample
-df['density'] = calk.density.seawater_1atm_MP81(df['temperature'], df['salinity'])
+# Calculate density for each sample at lab temperature = 23 deg C
+df['density'] = calk.density.seawater_1atm_MP81(23, df['salinity'])
+
+# Unit conversion
+df['DIC_quaatro_conv'] = df['DIC_quaatro']/df['density']
+
+# === RECALCULATE DIC TO IN-SITU TEMPERATURE
+df['DIC_quaatro_insitu'] = pyco2.sys(
+    df['TA'],
+    df['DIC_quaatro_conv'],
+    1,
+    2,
+    salinity=df['salinity'],
+    temperature=23,
+    temperature_out=df['temperature'],
+    total_phosphate=df['Phosphate'],
+    total_silicate=df['Silicate'],
+    total_ammonia=df['Ammonium']
+    )['dic']
 
 # === COMPARE VINDTA AND QUAATRO DATA
+# === PLOTTING
+# Prepare figure
+sns.set_style('darkgrid')
+sns.set_context('paper', font_scale=1)
+sns.set(font='Verdana', font_scale=1)
+
+# Create figure
+fig, ax = plt.subplots(dpi=300, figsize=(6, 6))
+
+# Linear regression
+ax = sns.regplot(x='DIC_quaatro_insitu',
+                 y='DIC_vindta',
+                 data=df,
+                 color='xkcd:blue',
+                 label='Linear regression',
+                )
+
+# Line through origin
+x = [2000, 2300]
+y = [2000, 2300]
+x_values = [x[0], x[1]]
+y_values = [y[0], y[1]]
+sns.lineplot(x=x_values,
+             y=y_values,
+             ax=ax,
+             linestyle='--',
+             color='black',
+             label='Perfect fit',
+             )
+
+
+# Improve figure
+xmin = df['DIC_quaatro_insitu'].min() - 10
+xmax = df['DIC_quaatro_insitu'].max() + 10
+ymin = df['DIC_vindta'].min() - 10
+ymax = df['DIC_vindta'].max() + 10
+plt.xlim([xmin, xmax])
+plt.ylim([ymin, ymax])
+
+plt.legend()
+
+ax.set_xlabel('$DIC_{QuAAtro}$ / μmol/kg')
+ax.set_ylabel('$DIC_{VINDTA}$ / μmol/kg')
+
+# Save plot
+plt.savefig('./figs/compare_so279_dic_vindta_quaatro.py.png')
+
+# === STATISTICS
+stats = stats.linregress(df['DIC_quaatro_insitu'], df['DIC_vindta'])
