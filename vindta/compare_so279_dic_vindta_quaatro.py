@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import PyCO2SYS as pyco2
 from scipy import stats
 
-
 # === VINDTA DATA
 # Import VINDTA DIC values
 vindta = pd.read_csv('data/SO279_CTD_discrete_samples.csv', 
