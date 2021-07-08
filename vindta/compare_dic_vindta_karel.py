@@ -1,4 +1,4 @@
-import pandas as pd, numpy as np
+import pandas as pd, numpy as np, seaborn as sns, calkulate as calk
 
 # === VINDTA DATA
 # Import VINDTA DIC values
@@ -9,6 +9,8 @@ vindta = pd.read_csv('data/SO279_CTD_discrete_samples.csv',
 rn = {
       'Station_ID':'station',
       'Niskin_ID':'niskin',
+      'CTDTEMP_ITS90':'temperature',
+      'CTDSAL_PSS78':'salinity',
       'DIC':'DIC_vindta'
       }
 vindta.rename(rn, axis=1, inplace=True)
@@ -80,3 +82,9 @@ quaatro['niskin'] = pd.to_numeric(quaatro['niskin'])
 
 # === BRING VINDTA AND QUAATRO DATA TOGETHER
 df = pd.merge(vindta, quaatro, on=['station', 'niskin'], how='left')
+
+# === CONVERT QUAATRO DIC units from uM/Lto uM/kg
+# Calculate density for each sample
+df['density'] = calk.density.seawater_1atm_MP81(df['temperature'], df['salinity'])
+
+# === COMPARE VINDTA AND QUAATRO DATA
