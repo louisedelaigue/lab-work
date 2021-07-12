@@ -280,7 +280,7 @@ dic_data['Niskin'] = df['niskin']
 dic_data['Temperature'] = df['temperature']
 dic_data['Salinity'] = df['salinity']
 dic_data['DIC_VINDTA'] = df['DIC_vindta']
-dic_data['DIC_QUAATRO'] = df['DIC_quaatro']
+dic_data['DIC_QUAATRO'] = df['DIC_quaatro_conv']
 
 # Save to .csv
-dic_data.to_csv('./data/dic_data_comparison.csv', index=False)
+dic_data.to_excel('./data/dic_data_comparison.xlsx', index=False)
