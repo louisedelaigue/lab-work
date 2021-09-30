@@ -1,4 +1,4 @@
-import pandas as pd, seaborn as sns
+import pandas as pd
 from fx_airica import process_airica
 from scipy import stats
 
