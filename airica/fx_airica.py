@@ -93,6 +93,10 @@ def process_airica(crm_val, db, dbs_filepath,
     db = pd.merge(left=db, right=data, how='left',
                   left_on='name', right_on='bottle')
     
+    # drop useless columns
+    db = db.loc[:, ~db.columns.str.endswith('_y')]
+    db.columns = db.columns.str.replace('_x', '')
+    
     # check that ".dbs" bottle = ".xlsx" name and drop "bottle" column
     if db["name"].equals(db["bottle"]):
         print("SUCCESSFUL DBS IMPORT")
@@ -104,7 +108,7 @@ def process_airica(crm_val, db, dbs_filepath,
     # recalculate density
     db['density_analysis'] = np.nan
     db['density_analysis'] = seawater_1atm_MP81(db.temperature,
-                                                db.salinity_rws)
+                                                db.salinity)
     
     # average areas with all areas and only last 3 areas
     db["area_av_4"] = (db.area_1+db.area_2+db.area_3+db.area_4)/4
@@ -162,9 +166,12 @@ def process_airica(crm_val, db, dbs_filepath,
     r2 = stats.linregress(db.area_av_3[L], db.CT_d_sample_v[L])[2]
     r2s = str(round(r2, 2))
     text = "$R^2$ = " + r2s
-    ax.text(30000,4500000, text, horizontalalignment='left',
+    text_x = db.area_av_3.max()*0.75
+    text_y = db.CT_d_sample_v.max()*0.9
+    ax.text(text_x, text_y, text, horizontalalignment='left',
         verticalalignment='center', fontsize=15)
-
+    
+    ax.set_xlim([db.area_av_3.min() - 1000, db.area_av_3.max() + 1000])
     
     plt.tight_layout()
     
