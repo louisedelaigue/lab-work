@@ -97,8 +97,8 @@ sns.regplot(y='alkalinity',
                 )
 
 # Improve figure
-ymin = dbs['alkalinity'][L].min() - 5
-ymax = dbs['alkalinity'][L].max() + 5
+ymin = dbs['alkalinity'][L].min() - 2
+ymax = dbs['alkalinity'][L].max() + 2
 xmin = dbs['analysis_datenum'][L].min() - 0.01
 xmax = dbs['analysis_datenum'][L].max() + 0.01
 plt.xlim([xmin, xmax])
@@ -117,5 +117,5 @@ ax.set_xlabel('Time')
 plt.tight_layout()
 
 # Save plot
-plt.savefig('./figs/storage_test_TA.png')
+plt.savefig('./figs/LD_storage_test_TA/storage_test_TA.png')
 
