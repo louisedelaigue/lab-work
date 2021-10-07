@@ -2,6 +2,7 @@ import numpy as np, pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
 import koolstof as ks, calkulate as calk
+from pandas.tseries.offsets import DateOffset
 from scipy import stats
 
 # Import logfile and dbs file
@@ -26,6 +27,11 @@ for meta in [
     "total_ammonia",
 ]:
     dbs[meta] = np.nan
+
+# Modify date error for 06/10/2021
+L = (dbs['analysis_datetime'].dt.day == 2) & (dbs['analysis_datetime'].dt.month == 5) & (dbs['analysis_datetime'].dt.year == 2005)
+dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'] + DateOffset(hours=10)
+dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.replace(year=2021, month=10, day=6))
 
 # Assign metadata values for CRMs
 prefixes = ["CRM-189-"]
@@ -93,6 +99,7 @@ sns.regplot(y='alkalinity',
                  x='analysis_datenum',
                  data=dbs[L],
                  color='xkcd:blue',
+                 ci=False,
                  ax=ax
                 )
 
@@ -104,12 +111,12 @@ xmax = dbs['analysis_datenum'][L].max() + 0.01
 plt.xlim([xmin, xmax])
 plt.ylim([ymin, ymax])
 
-plt.tick_params(
-    axis='x',          # changes apply to the x-axis
-    which='both',      # both major and minor ticks are affected
-    bottom=False,      # ticks along the bottom edge are off
-    top=False,         # ticks along the top edge are off
-    labelbottom=False) # labels along the bottom edge are off
+# plt.tick_params(
+#     axis='x',          # changes apply to the x-axis
+#     which='both',      # both major and minor ticks are affected
+#     bottom=False,      # ticks along the bottom edge are off
+#     top=False,         # ticks along the top edge are off
+#     labelbottom=False) # labels along the bottom edge are off
 
 ax.set_ylabel('Alkalinity / μmol/kg')
 ax.set_xlabel('Time')
