@@ -111,13 +111,6 @@ xmax = dbs['analysis_datenum'][L].max() + 0.01
 plt.xlim([xmin, xmax])
 plt.ylim([ymin, ymax])
 
-# plt.tick_params(
-#     axis='x',          # changes apply to the x-axis
-#     which='both',      # both major and minor ticks are affected
-#     bottom=False,      # ticks along the bottom edge are off
-#     top=False,         # ticks along the top edge are off
-#     labelbottom=False) # labels along the bottom edge are off
-
 ax.set_ylabel('Alkalinity / μmol/kg')
 ax.set_xlabel('Time')
 
