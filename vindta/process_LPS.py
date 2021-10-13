@@ -7,7 +7,7 @@ from scipy import stats
 
 # Import logfile and dbs file
 logfile = ks.read_logfile(
-    "data/LD_storage_test_TA/logfile.bak",
+    "./data/LPS/logfile.bak",
     methods=[
         "3C standard separator",
         "3C standard separator modified LD",
@@ -15,8 +15,11 @@ logfile = ks.read_logfile(
         "3C standard AT only"
     ],
 )
-dbs = ks.read_dbs("data/LD_storage_test_TA/LD_storage_test_TA.dbs", logfile=logfile)
+dbs = ks.read_dbs("data/LPS/LPS_dbs_complete.dbs", logfile=logfile)
 
+
+
+#%%
 # Create empty metadata columns
 for meta in [
     "salinity",
@@ -59,15 +62,10 @@ dbs["file_path"] = "data/LD_storage_test_TA/"
 
 # Assign TA acid batches
 dbs['analysis_batch'] = 1
-dbs.loc[dbs['analysis_datetime'].dt.day==13, 'analysis_batch'] = 2
 
 # Select which TA CRMs to use/avoid for calibration
 dbs["reference_good"] = ~np.isnan(dbs.alkalinity_certified)
 # dbs.loc[np.isin(dbs.bottle, ["CRM-189-0960-1023-U"]), "reference_good"] = False
-
-# Ignore bad files
-dbs['file_good'] = True
-dbs.loc[dbs['bottle']=='S20.2', 'file_good'] = False
 
 # Calibrate and solve alkalinity and plot calibration
 calk.io.get_VINDTA_filenames(dbs)
@@ -81,11 +79,15 @@ dbs = pd.DataFrame(dbs)
 
 # === STATISTICS
 # Statistics on sample replicates
-L = (dbs['bottle'].str.startswith('S')) & (dbs['alkalinity'].notnull())
-SE = stats.mstats.sem(dbs['alkalinity'][L], axis=None, ddof=0)
+L = dbs['bottle'].str.startswith('S')
+replicates = dbs[L]
+
+# Print standard error of the mean
+variable = 'alkalinity'
+SE = stats.mstats.sem(replicates[variable], axis=None, ddof=0)
 print('Standard error of measurement for all replicates = {}'.format(SE))
 
-#%% === PLOT
+# === PLOT
 # Prepare figure
 sns.set_style('darkgrid')
 sns.set_context('paper', font_scale=1)
@@ -97,7 +99,7 @@ fig, ax = plt.subplots(dpi=300, figsize=(7, 6))
 # Linear regression
 L = dbs['bottle'].str.startswith('S')
 sns.regplot(y='alkalinity',
-                 x='analysis_batch',
+                 x='analysis_datenum',
                  data=dbs[L],
                  color='xkcd:blue',
                  ci=False,
@@ -107,13 +109,13 @@ sns.regplot(y='alkalinity',
 # Improve figure
 ymin = dbs['alkalinity'][L].min() - 2
 ymax = dbs['alkalinity'][L].max() + 2
-xmin = dbs['analysis_batch'].min() - 1
-xmax = dbs['analysis_batch'].max() + 1
+xmin = dbs['analysis_datenum'][L].min() - 0.01
+xmax = dbs['analysis_datenum'][L].max() + 0.01
 plt.xlim([xmin, xmax])
 plt.ylim([ymin, ymax])
 
 ax.set_ylabel('Alkalinity / μmol/kg')
-ax.set_xlabel('Analysis number')
+ax.set_xlabel('Time')
 
 plt.tight_layout()
 
