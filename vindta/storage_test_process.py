@@ -85,6 +85,26 @@ L = (dbs['bottle'].str.startswith('S')) & (dbs['alkalinity'].notnull())
 SE = stats.mstats.sem(dbs['alkalinity'][L], axis=None, ddof=0)
 print('Standard error of measurement for all replicates = {}'.format(SE))
 
+# Print the mean and the median per analysis batch
+batches = list(dbs['analysis_batch'].unique())
+statistics = pd.DataFrame({"batch_number":batches})
+statistics['analysis_date'] = np.nan
+statistics['mean'] = np.nan
+statistics['median'] = np.nan
+statistics['standard_error_batch'] = np.nan
+statistics['standard_error_all_batches'] = np.nan
+
+for batch in batches:
+    L = ((dbs['bottle'].str.startswith('S')) 
+         & (dbs['alkalinity'].notnull())
+         & (dbs['analysis_batch']==batch))
+    statistics.loc[statistics['batch_number']==batch, 'analysis_date'] = dbs['analysis_datetime'][L].dt.date.iloc[0]
+    statistics.loc[statistics['batch_number']==batch, 'mean'] = dbs['alkalinity'][L].mean()
+    statistics.loc[statistics['batch_number']==batch, 'median'] = dbs['alkalinity'][L].median()
+    statistics.loc[statistics['batch_number']==batch, 'standard_error_batch'] = stats.mstats.sem(dbs['alkalinity'][L], axis=None, ddof=0)
+    L = (dbs['bottle'].str.startswith('S')) & (dbs['alkalinity'].notnull())
+    statistics.loc[statistics['batch_number']==batch, 'standard_error_all_batches'] = stats.mstats.sem(dbs['alkalinity'][L], axis=None, ddof=0)
+
 # === PLOT
 # Prepare figure
 sns.set_style('darkgrid')
