@@ -85,7 +85,7 @@ L = (dbs['bottle'].str.startswith('S')) & (dbs['alkalinity'].notnull())
 SE = stats.mstats.sem(dbs['alkalinity'][L], axis=None, ddof=0)
 print('Standard error of measurement for all replicates = {}'.format(SE))
 
-#%% === PLOT
+# === PLOT
 # Prepare figure
 sns.set_style('darkgrid')
 sns.set_context('paper', font_scale=1)
