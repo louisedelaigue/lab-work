@@ -80,12 +80,12 @@ calk.plot.alkalinity_offset(dbs, figure_fname="figs/LD_storage_test_TA/alkalinit
 dbs = pd.DataFrame(dbs)
 
 # === STATISTICS
-# Statistics on sample replicates
+# Statistics on all replicates
 L = (dbs['bottle'].str.startswith('S')) & (dbs['alkalinity'].notnull())
 SE = stats.mstats.sem(dbs['alkalinity'][L], axis=None, ddof=0)
 print('Standard error of measurement for all replicates = {}'.format(SE))
 
-# Print the mean and the median per analysis batch
+# Create stats table per analysis batch
 batches = list(dbs['analysis_batch'].unique())
 statistics = pd.DataFrame({"batch_number":batches})
 statistics['analysis_date'] = np.nan
