@@ -141,4 +141,3 @@ plt.tight_layout()
 
 # Save plot
 plt.savefig('./figs/LD_storage_test_TA/storage_test_TA.png')
-
