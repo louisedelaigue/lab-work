@@ -1,6 +1,5 @@
 import numpy as np, pandas as pd
 from matplotlib import pyplot as plt
-from brokenaxes import brokenaxes 
 import seaborn as sns
 import koolstof as ks, calkulate as calk
 from pandas.tseries.offsets import DateOffset
