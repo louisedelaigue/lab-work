@@ -1,5 +1,6 @@
 import numpy as np, pandas as pd
 from matplotlib import pyplot as plt
+from brokenaxes import brokenaxes 
 import seaborn as sns
 import koolstof as ks, calkulate as calk
 from pandas.tseries.offsets import DateOffset
@@ -79,6 +80,11 @@ calk.plot.alkalinity_offset(dbs, figure_fname="figs/LD_storage_test_TA/alkalinit
 # Demote dbs to a standard DataFrame
 dbs = pd.DataFrame(dbs)
 
+# === TIME SINCE SAMPLING COLUMN
+dbs['time_since_sampling'] = np.nan
+start_date = pd.to_datetime('2021-10-05', format='%Y-%m-%d')
+dbs['time_since_sampling'] = (dbs['analysis_datetime'] - start_date).dt.days
+
 # === STATISTICS
 # Statistics on all replicates
 L = (dbs['bottle'].str.startswith('S')) & (dbs['alkalinity'].notnull())
@@ -108,36 +114,31 @@ for batch in batches:
     statistics.loc[statistics['batch_number']==batch, 'standard_error_all_batches'] = stats.mstats.sem(dbs['alkalinity'][L], axis=None, ddof=0)
 
 # === PLOT
-# Prepare figure
-sns.set_style('darkgrid')
-sns.set_context('paper', font_scale=1)
-sns.set(font='Verdana', font_scale=1)
-
 # Create figure
-fig, ax = plt.subplots(dpi=300, figsize=(7, 6))
+fig, ax = plt.subplots(dpi=300)
 
 # Linear regression
-L = dbs['bottle'].str.startswith('S')
-sns.regplot(y='alkalinity',
-                 x='analysis_batch',
+L = (dbs['bottle'].str.startswith('S'))
+sns.scatterplot(y='alkalinity',
+                 x='time_since_sampling',
                  data=dbs[L],
-                 color='xkcd:blue',
-                 ci=False,
-                 ax=ax
+                 color='xkcd:blue'
                 )
 
 # Improve figure
 ymin = dbs['alkalinity'][L].min() - 2
 ymax = dbs['alkalinity'][L].max() + 2
-xmin = dbs['analysis_batch'].min() - 1
-xmax = dbs['analysis_batch'].max() + 1
+xmin = dbs['time_since_sampling'].min() - 1
+xmax = dbs['time_since_sampling'].max() + 1
 plt.xlim([xmin, xmax])
 plt.ylim([ymin, ymax])
 
+ax.grid(alpha=0.3)
+
 ax.set_ylabel('Alkalinity / μmol/kg')
-ax.set_xlabel('Analysis number')
+ax.set_xlabel('Time since sampling (days)')
 
 plt.tight_layout()
 
 # Save plot
-plt.savefig('./figs/LD_storage_test_TA/storage_test_TA.png')
+# plt.savefig('./figs/LD_storage_test_TA/storage_test_TA.png')
