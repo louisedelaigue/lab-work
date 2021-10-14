@@ -1,59 +1,96 @@
-import pandas as pd
-from fx_airica import process_airica
+import pandas as pd, numpy as np
+from fx_airica_koolstof import process_airica
 from scipy import stats
 import seaborn as sns
 from matplotlib import pyplot as plt
 
 # Import lab file
-db = pd.read_excel('./data/LD_storage_test/AIRICA_storage_test.xlsx',
+db = pd.read_excel('./data/LD_storage_test/AIRICA_storage_test_mod.xlsx',
                    na_values=-9999)
 
-# Only keep flag = 2
-L = db['flag'] == 2
-db = db[L]
+# Remove nan
+L = db['DIC'].isnull()
+db = db[~L]
 
 # Process AIRICA data
 results = process_airica(2009.48, 
                          db,
-                         './data/LD_storage_test/LD_storage_test.dbs',
+                         './data/LD_storage_test/LD_storage_test_mod.dbs',
                          './data/LD_storage_test/results_storage_test.csv'
                     )
 
 # === STATISTICS
-# Statistics on replicates
+# Statistics on all replicates
 L = results['name'].str.startswith(('R', 'U'))
-replicates = results[L]
-
-# Print standard error of the mean
-variable = 'TCO2_3'
-SE = stats.mstats.sem(replicates[variable], axis=None, ddof=0)
+SE = stats.mstats.sem(results['TCO2_3'][L], axis=None, ddof=0)
 print('Standard error of measurement for all replicates = {}'.format(SE))
 
-# Print standard error of the mean for R and U
-L = replicates['name'].str.startswith('R')
-rinsed = replicates[L]
-L = replicates['name'].str.startswith('U')
-unrinsed = replicates[L]
 
-SE_R = stats.mstats.sem(rinsed[variable], axis=None, ddof=0)
-print('Standard error of measurement for rinsed replicates = {}'.format(SE_R))
+# Create table to hold statistics for each analysis batch
+batches = list(results['analysis_batch'].unique())
+statistics = pd.DataFrame({"batch_number":batches})
+statistics['analysis_date'] = np.nan
+statistics['n_samples'] = np.nan
+statistics['mean_all'] = np.nan
+statistics['median_all'] = np.nan
+statistics['standard_error_batch'] = np.nan
+statistics['standard_error_all_batches'] = np.nan
+statistics['mean_R'] = np.nan
+statistics['median_R'] = np.nan
+statistics['standard_error_batch_R'] = np.nan
+statistics['standard_error_all_batches_R'] = np.nan
+statistics['mean_U'] = np.nan
+statistics['median_U'] = np.nan
+statistics['standard_error_batch_U'] = np.nan
+statistics['standard_error_all_batches_U'] = np.nan
 
-SE_U = stats.mstats.sem(unrinsed[variable], axis=None, ddof=0)
-print('Standard error of measurement for unrinsed replicates = {}'.format(SE_U))
+for batch in batches:
+    # Compute overall statistics
+    L = ((results['name'].str.startswith(('R', 'U'))) 
+         & (results['TCO2_3'].notnull())
+         & (results['analysis_batch']==batch))
+    statistics.loc[statistics['batch_number']==batch, 'analysis_date'] = results['datetime'][L].dt.date.iloc[0]
+    statistics.loc[statistics['batch_number']==batch, 'n_samples'] = results['TCO2_3'][L].count()
+    statistics.loc[statistics['batch_number']==batch, 'mean_all'] = results['TCO2_3'][L].mean()
+    statistics.loc[statistics['batch_number']==batch, 'median_all'] = results['TCO2_3'][L].median()
+    statistics.loc[statistics['batch_number']==batch, 'standard_error_batch'] = stats.mstats.sem(results['TCO2_3'][L], axis=None, ddof=0)
+    L = (results['name'].str.startswith(('R', 'U'))) & (results['TCO2_3'].notnull())
+    statistics.loc[statistics['batch_number']==batch, 'standard_error_all_batches'] = stats.mstats.sem(results['TCO2_3'][L], axis=None, ddof=0)
+    
+    # Compute statistics for R vs. U
+    # R
+    L = ((results['name'].str.startswith('R')) 
+         & (results['TCO2_3'].notnull())
+         & (results['analysis_batch']==batch))
+    statistics.loc[statistics['batch_number']==batch, 'mean_R'] = results['TCO2_3'][L].mean()
+    statistics.loc[statistics['batch_number']==batch, 'median_R'] = results['TCO2_3'][L].median()
+    statistics.loc[statistics['batch_number']==batch, 'standard_error_batch_R'] = stats.mstats.sem(results['TCO2_3'][L], axis=None, ddof=0)
+    L = (results['name'].str.startswith(('R'))) & (results['TCO2_3'].notnull())
+    statistics.loc[statistics['batch_number']==batch, 'standard_error_all_batches_R'] = stats.mstats.sem(results['TCO2_3'][L], axis=None, ddof=0)
+    
+    # U
+    L = ((results['name'].str.startswith('U')) 
+    & (results['TCO2_3'].notnull())
+    & (results['analysis_batch']==batch))
+    statistics.loc[statistics['batch_number']==batch, 'mean_U'] = results['TCO2_3'][L].mean()
+    statistics.loc[statistics['batch_number']==batch, 'median_U'] = results['TCO2_3'][L].median()
+    statistics.loc[statistics['batch_number']==batch, 'standard_error_batch_U'] = stats.mstats.sem(results['TCO2_3'][L], axis=None, ddof=0)
+    L = (results['name'].str.startswith(('U'))) & (results['TCO2_3'].notnull())
+    statistics.loc[statistics['batch_number']==batch, 'standard_error_all_batches_U'] = stats.mstats.sem(results['TCO2_3'][L], axis=None, ddof=0)
+
+# === TIME SINCE SAMPLING COLUMN
+results['time_since_sampling'] = np.nan
+start_date = pd.to_datetime('2021-09-28', format='%Y-%m-%d')
+results['time_since_sampling'] = (results['datetime'] - start_date).dt.days
 
 # === PLOT 4 AREAS
-# Prepare figure
-sns.set_style('darkgrid')
-sns.set_context('paper', font_scale=1)
-sns.set(font='Verdana', font_scale=1)
-
 # Create figure
-fig, ax = plt.subplots(dpi=300, figsize=(7, 6))
+fig, ax = plt.subplots(dpi=300)
 
 # Scatter rinsed samples in dark blue
 L = results['name'].str.startswith('R')
 sns.scatterplot(y='TCO2_4',
-                 x='datenum',
+                 x='time_since_sampling',
                  data=results[L],
                  color='xkcd:blue',
                  label='Rinsed vials',
@@ -64,7 +101,7 @@ sns.scatterplot(y='TCO2_4',
 # Scatter unrinsed samples in light blue
 L = results['name'].str.startswith('U')
 sns.scatterplot(y='TCO2_4',
-                 x='datenum',
+                 x='time_since_sampling',
                  data=results[L],
                  color='xkcd:fuchsia',
                  label='Unrinsed vials',
@@ -73,27 +110,31 @@ sns.scatterplot(y='TCO2_4',
                 )
 
 # Improve figure
-ax.set_ylabel('$DIC_{4 areas}$ / μmol/kg')
-ax.set_xlabel('Time')
+ymin = results['TCO2_4'][L].min() - 2
+ymax = results['TCO2_4'][L].max() + 2
+xmin = results['time_since_sampling'].min() - 1
+xmax = results['time_since_sampling'].max() + 1
+plt.xlim([xmin, xmax])
+plt.ylim([ymin, ymax])
 
+
+ax.set_ylabel('$DIC_{4 areas}$ / μmol/kg')
+ax.set_xlabel('Time since sampling (days)')
+
+ax.grid(alpha=0.3)
 plt.tight_layout()
 
 # Save plot
 plt.savefig('./figures/storage_test_DIC_4areas.png')
 
 # === PLOT 3 AREAS
-# Prepare figure
-sns.set_style('darkgrid')
-sns.set_context('paper', font_scale=1)
-sns.set(font='Verdana', font_scale=1)
-
 # Create figure
-fig, ax = plt.subplots(dpi=300, figsize=(7, 6))
+fig, ax = plt.subplots(dpi=300)
 
 # Scatter rinsed samples in dark blue
 L = results['name'].str.startswith('R')
 sns.scatterplot(y='TCO2_3',
-                 x='datenum',
+                 x='time_since_sampling',
                  data=results[L],
                  color='xkcd:blue',
                  label='Rinsed vials',
@@ -104,7 +145,7 @@ sns.scatterplot(y='TCO2_3',
 # Scatter unrinsed samples in light blue
 L = results['name'].str.startswith('U')
 sns.scatterplot(y='TCO2_3',
-                 x='datenum',
+                 x='time_since_sampling',
                  data=results[L],
                  color='xkcd:fuchsia',
                  label='Unrinsed vials', 
@@ -113,10 +154,17 @@ sns.scatterplot(y='TCO2_3',
                 )
 
 # Improve figure
-plt.legend()
-ax.set_ylabel('$DIC_{3 areas}$ / μmol/kg')
-ax.set_xlabel('Time')
+ymin = results['TCO2_3'][L].min() - 2
+ymax = results['TCO2_3'][L].max() + 2
+xmin = results['time_since_sampling'].min() - 1
+xmax = results['time_since_sampling'].max() + 1
+plt.xlim([xmin, xmax])
+plt.ylim([ymin, ymax])
 
+ax.set_ylabel('$DIC_{3 areas}$ / μmol/kg')
+ax.set_xlabel('Time since sampling (days)')
+
+ax.grid(alpha=0.3)
 plt.tight_layout()
 
 # Save plot
