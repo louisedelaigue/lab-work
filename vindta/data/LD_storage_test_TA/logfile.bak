@@ -169537,3 +169537,234 @@ bottle	CRM-189-0102-2	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
 
 
 3C stirrer off.mth run started 10/13/21  15:16
+3C test all valves.mth run started 05/02/05  00:19
+3C standard AT only.mth run started 05/02/05  00:26
+bottle	junk01	0	0	0	0	0.00	0.00	36.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	1983.05	36.000	14.31	0.00	1.02689	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  00:51
+bottle	junk02	0	0	0	0	0.00	0.00	36.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	0.00	36.000	14.31	0.00	1.02689	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  01:11
+bottle	junk03	0	0	0	0	0.00	0.00	36.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2198.51	36.000	14.31	0.00	1.02689	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  01:31
+bottle	junk04	0	0	0	0	0.00	0.00	36.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2237.22	36.000	14.31	0.00	1.02689	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  01:52
+bottle	junk05	0	0	0	0	0.00	0.00	36.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2236.63	36.000	14.31	0.00	1.02689	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  02:17
+bottle	CRM189_201021_1	0	0	0	0	0.00	0.00	36.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2158.35	36.000	14.31	0.00	1.02689	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  02:41
+bottle	CRM189_201021_2	0	0	0	0	0.00	0.00	36.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2157.98	36.000	14.31	0.00	1.02689	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  03:13
+bottle	Amp400c1_2w	0	0	0	0	0.00	0.00	36.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2239.35	36.000	14.31	0.00	1.02689	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  03:33
+bottle	Amp800c1_2w	0	0	0	0	0.00	0.00	36.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	1008.04	36.000	14.31	0.00	1.02689	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  04:04
+bottle	junk06	0	0	0	0	0.00	0.00	36.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2237.75	36.000	14.31	0.00	1.02689	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  04:24
+bottle	Amp1200c1_2w	0	0	0	0	0.00	0.00	36.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2239.60	36.000	14.31	0.00	1.02689	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  04:44
+bottle	Amp1600c1_2w	0	0	0	0	0.00	0.00	36.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2242.53	36.000	14.31	0.00	1.02689	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  05:04
+bottle	Amp400_24h	0	0	0	0	0.00	0.00	36.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2239.49	36.000	14.31	0.00	1.02689	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  05:31
+bottle	Amp800_24h	0	0	0	0	0.00	0.00	36.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2238.73	36.000	14.31	0.00	1.02689	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  06:03
+bottle	Amp1600_24h	0	0	0	0	0.00	0.00	36.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2238.52	36.000	14.31	0.00	1.02689	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  06:27
+bottle	Amp1200_24h	0	0	0	0	0.00	0.00	36.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2241.27	36.000	14.31	0.00	1.02689	12.6	
+
+
+3C fill AT pipette.mth run started 05/02/05  06:57
+3C empty pipette into waste.mth run started 05/02/05  07:00
+3C standard AT only.mth run started 05/02/05  16:41
+bottle	J10	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	1918.79	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  17:26
+bottle	J11	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	1887.87	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  17:44
+bottle	J12	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	1876.67	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  18:11
+bottle	J13	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2245.93	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  18:29
+bottle	J14	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2245.78	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  18:50
+bottle	J15	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2244.87	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  19:09
+bottle	CRM-189-0159-1	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2158.48	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  19:31
+bottle	S48	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2231.03	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  20:02
+bottle	S71	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2232.77	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  20:21
+bottle	S51	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2233.28	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  20:41
+bottle	S13	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2232.89	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  20:59
+bottle	S75	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2231.15	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  21:17
+bottle	S93	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2231.97	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  21:38
+bottle	S49	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2230.32	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  21:57
+bottle	S24	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2092.02	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  22:21
+bottle	S99	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2147.85	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  22:43
+bottle	J16	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2247.95	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  23:17
+bottle	J17	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	1767.08	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  23:34
+bottle	J18	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2244.87	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/02/05  23:52
+bottle	S40	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2231.60	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/03/05  00:12
+bottle	CRM-189-0159-2	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2159.03	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 05/03/05  00:30
+bottle	CRM-189-0159-3	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	1863.18	35.000	14.31	0.00	1.02612	12.6	
+
+

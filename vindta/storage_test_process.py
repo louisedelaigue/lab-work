@@ -29,9 +29,17 @@ for meta in [
     dbs[meta] = np.nan
 
 # Modify date error for 06/10/2021
-L = (dbs['analysis_datetime'].dt.day == 2) & (dbs['analysis_datetime'].dt.month == 5) & (dbs['analysis_datetime'].dt.year == 2005)
+L = (dbs['analysis_datetime'].dt.day == 2) & (dbs['analysis_datetime'].dt.month == 5) & (dbs['analysis_datetime'].dt.year == 2005) & (dbs['analysis_datetime'].dt.hour < 9)
 dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'] + DateOffset(hours=10)
 dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.replace(year=2021, month=10, day=6))
+
+# Modify date error for 27/10/2021
+L = (dbs['analysis_datetime'].dt.day == 2) & (dbs['analysis_datetime'].dt.month == 5) & (dbs['analysis_datetime'].dt.year == 2005) & (dbs['analysis_datetime'].dt.hour > 9)
+dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'] - DateOffset(hours=10)
+dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.replace(year=2021, month=10, day=27))
+L = (dbs['analysis_datetime'].dt.day == 3) & (dbs['analysis_datetime'].dt.month == 5) & (dbs['analysis_datetime'].dt.year == 2005)
+dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'] - DateOffset(hours=10)
+dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.replace(year=2021, month=10, day=27))
 
 # Assign metadata values for CRMs
 prefixes = ["CRM-189-"]
@@ -60,14 +68,20 @@ dbs["file_path"] = "data/LD_storage_test_TA/"
 # Assign TA acid batches
 dbs['analysis_batch'] = 1
 dbs.loc[dbs['analysis_datetime'].dt.day==13, 'analysis_batch'] = 2
+dbs.loc[dbs['analysis_datetime'].dt.day==27, 'analysis_batch'] = 3
 
 # Select which TA CRMs to use/avoid for calibration
 dbs["reference_good"] = ~np.isnan(dbs.alkalinity_certified)
 # dbs.loc[np.isin(dbs.bottle, ["CRM-189-0960-1023-U"]), "reference_good"] = False
+dbs.loc[dbs['bottle']=='CRM-189-0159-3', 'reference_good'] = False
 
 # Ignore bad files
 dbs['file_good'] = True
 dbs.loc[dbs['bottle']=='S20.2', 'file_good'] = False
+dbs.loc[dbs['bottle']=='S24', 'file_good'] = False
+dbs.loc[dbs['bottle']=='S99', 'file_good'] = False
+dbs.loc[dbs['bottle']=='J17', 'file_good'] = False
+dbs.loc[dbs['bottle']=='CRM-189-0159-3', 'file_good'] = False
 
 # Calibrate and solve alkalinity and plot calibration
 calk.io.get_VINDTA_filenames(dbs)
@@ -140,4 +154,4 @@ ax.set_xlabel('Time since sampling (days)')
 plt.tight_layout()
 
 # Save plot
-# plt.savefig('./figs/LD_storage_test_TA/storage_test_TA.png')
+plt.savefig('./figs/LD_storage_test_TA/storage_test_TA.png')
