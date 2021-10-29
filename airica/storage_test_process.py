@@ -5,18 +5,26 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 
 # Import lab file
-db = pd.read_excel('./data/LD_storage_test/AIRICA_storage_test_mod.xlsx',
+db = pd.read_excel('./data/LD_storage_test/AIRICA_storage_test_mod_29102021.xlsx',
                    na_values=-9999)
 
 # Remove nan
 L = db['DIC'].isnull()
 db = db[~L]
 
+# Ignore data from 27/10/2021 (AIRICA malfunction)
+L = db['analysis_batch'] == 3
+db = db[~L]
+
+# TEST - Ignore U12
+# L = db['name'] == 'U12'
+# db = db[~L]
+
 # Process AIRICA data
 results = process_airica(2009.48, 
                          db,
                          './data/LD_storage_test/LD_storage_test_mod.dbs',
-                         './data/LD_storage_test/results_storage_test.csv'
+                         './data/LD_storage_test/results_storage_test.csv',
                     )
 
 # === STATISTICS
@@ -24,7 +32,6 @@ results = process_airica(2009.48,
 L = results['name'].str.startswith(('R', 'U'))
 SE = stats.mstats.sem(results['TCO2_3'][L], axis=None, ddof=0)
 print('Standard error of measurement for all replicates = {}'.format(SE))
-
 
 # Create table to hold statistics for each analysis batch
 batches = list(results['analysis_batch'].unique())
