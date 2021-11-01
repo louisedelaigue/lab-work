@@ -26,6 +26,7 @@ results = process_airica(2009.48,
                          './data/LD_storage_test/LD_storage_test_mod.dbs',
                          './data/LD_storage_test/results_storage_test.csv',
                     )
+results.to_csv('./data/LD_storage_test/results.csv', index=False)
 
 # === STATISTICS
 # Statistics on all replicates
