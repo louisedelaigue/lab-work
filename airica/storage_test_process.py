@@ -86,6 +86,8 @@ for batch in batches:
     L = (results['name'].str.startswith(('U'))) & (results['TCO2_3'].notnull())
     statistics.loc[statistics['batch_number']==batch, 'standard_error_all_batches_U'] = stats.mstats.sem(results['TCO2_3'][L], axis=None, ddof=0)
 
+statistics.to_csv('./data/stats_airica.csv', index=False)
+
 # === TIME SINCE SAMPLING COLUMN
 results['time_since_sampling'] = np.nan
 start_date = pd.to_datetime('2021-09-28', format='%Y-%m-%d')

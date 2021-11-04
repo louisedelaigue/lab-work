@@ -126,6 +126,8 @@ for batch in batches:
     L = (dbs['bottle'].str.startswith('S')) & (dbs['alkalinity'].notnull())
     statistics.loc[statistics['batch_number']==batch, 'standard_error_all_batches'] = stats.mstats.sem(dbs['alkalinity'][L], axis=None, ddof=0)
 
+statistics.to_csv('./data/stats_vindta.csv', index=False)
+
 # === PLOT
 # Create figure
 fig, ax = plt.subplots(dpi=300)
