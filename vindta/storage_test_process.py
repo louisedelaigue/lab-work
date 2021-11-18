@@ -7,7 +7,7 @@ from scipy import stats
 
 # Import logfile and dbs file
 logfile = ks.read_logfile(
-    "data/LD_storage_test_TA/logfile.bak",
+    "./data/LD_storage_test_TA/logfile.bak",
     methods=[
         "3C standard separator",
         "3C standard separator modified LD",
@@ -41,15 +41,30 @@ L = (dbs['analysis_datetime'].dt.day == 3) & (dbs['analysis_datetime'].dt.month 
 dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'] - DateOffset(hours=10)
 dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.replace(year=2021, month=10, day=27))
 
-# Assign metadata values for CRMs
+# Modify date error for 18/11/2021
+L = dbs.index >= 54
+dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.replace(year=2021, month=11, day=18))
+
+# Assign metadata values for CRMs batch 189
 prefixes = ["CRM-189-"]
-dbs["crm"] = dbs.bottle.str.startswith("CRM")
+dbs["crm"] = dbs.bottle.str.startswith("CRM-189")
 dbs["crm_batch_189"] = dbs.bottle.str.startswith(tuple(prefixes))
 dbs.loc[dbs.crm_batch_189, "dic_certified"] = 2009.48  # micromol/kg-sw
 dbs.loc[dbs.crm_batch_189, "alkalinity_certified"] = 2205.26  # micromol/kg-sw
 dbs.loc[dbs.crm_batch_189, "salinity"] = 33.494
 dbs.loc[dbs.crm_batch_189, "total_phosphate"] = 0.45  # micromol/kg-sw
 dbs.loc[dbs.crm_batch_189, "total_silicate"] = 2.1  # micromol/kg-sw
+dbs.loc[dbs.crm_batch_189, "total_ammonia"] = 0  # micromol/kg-sw
+
+# Assign metadata values for CRMs batch 189
+prefixes = ["CRM-195-"]
+dbs["crm"] = dbs.bottle.str.startswith("CRM-195")
+dbs["crm_batch_189"] = dbs.bottle.str.startswith(tuple(prefixes))
+dbs.loc[dbs.crm_batch_189, "dic_certified"] = 2024.96 # micromol/kg-sw
+dbs.loc[dbs.crm_batch_189, "alkalinity_certified"] = 2213.51  # micromol/kg-sw
+dbs.loc[dbs.crm_batch_189, "salinity"] = 33.485
+dbs.loc[dbs.crm_batch_189, "total_phosphate"] = 0.49  # micromol/kg-sw
+dbs.loc[dbs.crm_batch_189, "total_silicate"] = 3.6  # micromol/kg-sw
 dbs.loc[dbs.crm_batch_189, "total_ammonia"] = 0  # micromol/kg-sw
 
 # Assign temperature = 25.0 for VINDTA analysis temperature
@@ -66,9 +81,7 @@ dbs["analyte_volume"] = 95.939  # TA pipette volume in ml
 dbs["file_path"] = "data/LD_storage_test_TA/"
 
 # Assign TA acid batches
-dbs['analysis_batch'] = 1
-dbs.loc[dbs['analysis_datetime'].dt.day==13, 'analysis_batch'] = 2
-dbs.loc[dbs['analysis_datetime'].dt.day==27, 'analysis_batch'] = 3
+dbs['analysis_batch'] = 1 # made 15/09/2021
 
 # Select which TA CRMs to use/avoid for calibration
 dbs["reference_good"] = ~np.isnan(dbs.alkalinity_certified)
@@ -105,7 +118,12 @@ SE = stats.mstats.sem(dbs['alkalinity'][L], axis=None, ddof=0)
 print('Standard error of measurement for all replicates = {}'.format(SE))
 
 # Create stats table per analysis batch
-batches = list(dbs['analysis_batch'].unique())
+dbs['group'] = 1
+dbs.loc[dbs['analysis_datetime'].dt.day==13, 'group'] = 2
+dbs.loc[dbs['analysis_datetime'].dt.day==27, 'group'] = 3
+dbs.loc[dbs['analysis_datetime'].dt.day==18, 'group'] = 4
+
+batches = list(dbs['group'].unique())
 statistics = pd.DataFrame({"batch_number":batches})
 statistics['analysis_date'] = np.nan
 statistics['n_samples'] = np.nan
@@ -117,7 +135,7 @@ statistics['standard_error_all_batches'] = np.nan
 for batch in batches:
     L = ((dbs['bottle'].str.startswith('S')) 
          & (dbs['alkalinity'].notnull())
-         & (dbs['analysis_batch']==batch))
+         & (dbs['group']==batch))
     statistics.loc[statistics['batch_number']==batch, 'analysis_date'] = dbs['analysis_datetime'][L].dt.date.iloc[0]
     statistics.loc[statistics['batch_number']==batch, 'n_samples'] = dbs['alkalinity'][L].count()
     statistics.loc[statistics['batch_number']==batch, 'mean'] = dbs['alkalinity'][L].mean()
