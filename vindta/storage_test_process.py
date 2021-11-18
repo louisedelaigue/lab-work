@@ -47,7 +47,7 @@ dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.r
 
 # Assign metadata values for CRMs batch 189
 prefixes = ["CRM-189-"]
-dbs["crm"] = dbs.bottle.str.startswith("CRM-189")
+dbs["crm"] = dbs.bottle.str.startswith("CRM")
 dbs["crm_batch_189"] = dbs.bottle.str.startswith(tuple(prefixes))
 dbs.loc[dbs.crm_batch_189, "dic_certified"] = 2009.48  # micromol/kg-sw
 dbs.loc[dbs.crm_batch_189, "alkalinity_certified"] = 2205.26  # micromol/kg-sw
@@ -56,10 +56,10 @@ dbs.loc[dbs.crm_batch_189, "total_phosphate"] = 0.45  # micromol/kg-sw
 dbs.loc[dbs.crm_batch_189, "total_silicate"] = 2.1  # micromol/kg-sw
 dbs.loc[dbs.crm_batch_189, "total_ammonia"] = 0  # micromol/kg-sw
 
-# Assign metadata values for CRMs batch 189
+# Assign metadata values for CRMs batch 195
 prefixes = ["CRM-195-"]
-dbs["crm"] = dbs.bottle.str.startswith("CRM-195")
-dbs["crm_batch_189"] = dbs.bottle.str.startswith(tuple(prefixes))
+dbs["crm"] = dbs.bottle.str.startswith("CRM")
+dbs["crm_batch_195"] = dbs.bottle.str.startswith(tuple(prefixes))
 dbs.loc[dbs.crm_batch_189, "dic_certified"] = 2024.96 # micromol/kg-sw
 dbs.loc[dbs.crm_batch_189, "alkalinity_certified"] = 2213.51  # micromol/kg-sw
 dbs.loc[dbs.crm_batch_189, "salinity"] = 33.485
