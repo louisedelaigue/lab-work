@@ -9,9 +9,6 @@ from scipy import stats
 logfile = ks.read_logfile(
     "./data/LD_storage_test_TA/logfile.bak",
     methods=[
-        "3C standard separator",
-        "3C standard separator modified LD",
-        "3C standard separator modified LD temp",
         "3C standard AT only"
     ],
 )
@@ -44,6 +41,7 @@ dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.r
 # Modify date error for 18/11/2021
 L = dbs.index >= 54
 dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.replace(year=2021, month=11, day=18))
+
 
 # Assign metadata values for CRMs batch 189
 prefixes = ["CRM-189-"]
