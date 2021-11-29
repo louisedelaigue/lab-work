@@ -123,11 +123,6 @@ def process_airica(
 
     # Assign CRM a and b to samples based on analysis batch
     db = pd.merge(left=db, right=db_cf, how="left", on="analysis_batch")        
-        
-    # db["a_3"] = db_cf.loc[db.analysis_batch.values, "a_3"].values
-    # db["a_4"] = db_cf.loc[db.analysis_batch.values, "a_4"].values
-    # db["b_3"] = db_cf.loc[db.analysis_batch.values, "b_3"].values
-    # db["b_4"] = db_cf.loc[db.analysis_batch.values, "b_4"].values
 
     # Calculate TCO2 values
     db["TCO2_3"] = np.nan
