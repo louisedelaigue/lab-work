@@ -30,23 +30,30 @@ L = (dbs['analysis_datetime'].dt.day == 2) & (dbs['analysis_datetime'].dt.month 
 dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'] + DateOffset(hours=10)
 dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.replace(year=2021, month=10, day=6))
 
-# Modify date error for 27/10/2021
-L = (dbs['analysis_datetime'].dt.day == 2) & (dbs['analysis_datetime'].dt.month == 5) & (dbs['analysis_datetime'].dt.year == 2005) & (dbs['analysis_datetime'].dt.hour > 9)
-dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'] - DateOffset(hours=10)
-dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.replace(year=2021, month=10, day=27))
-L = (dbs['analysis_datetime'].dt.day == 3) & (dbs['analysis_datetime'].dt.month == 5) & (dbs['analysis_datetime'].dt.year == 2005)
-dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'] - DateOffset(hours=10)
-dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.replace(year=2021, month=10, day=27))
+# No date error for 13/10/2021
 
-# Modify date error for 18/11/2021
-L = dbs.index >= 54
+# # Modify date error for 27/10/2021
+october_list = ["J10", "J11", "J12", "J13", "J14", "J15", "CRM-189-0159-1", "S48", "S71", "S51", "S13", "S75", "S93","S49", "S24", "S99",
+                "J16", "J17", "J18", "S40", "CRM-189-0159-2", "CRM-189-0159-3"]
+for sample in october_list:
+    L = dbs["bottle"] == sample
+    dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.replace(year=2021, month=10, day=27))
+
+# # Modify date error for 18/11/2021
+november_list = ["J20", "J21", "J22", "J23", "CRM-195-0052-1", "S10", "S43", "S52", "S73", "S27", "S61", "S83", "S85", "S95", "S42",
+                 "CRM-195-0052-2", "H08", "H07", "H06", "H05", "H04", "H02", "H03-1", "H01-1", "H01-2", "H01-2", "H03-2",
+                 "CRM-195-0052-3", "CRM-195-0052-4"]
+
+for sample in november_list:
+    L = dbs["bottle"] == sample
+    dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.replace(year=2021, month=11, day=18))
 dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.replace(year=2021, month=11, day=18))
 
 
 # Assign metadata values for CRMs batch 189
-prefixes = ["CRM-189-"]
+prefixes = "CRM-189-"
 dbs["crm"] = dbs.bottle.str.startswith("CRM")
-dbs["crm_batch_189"] = dbs.bottle.str.startswith(tuple(prefixes))
+dbs["crm_batch_189"] = dbs.bottle.str.startswith(prefixes)
 dbs.loc[dbs.crm_batch_189, "dic_certified"] = 2009.48  # micromol/kg-sw
 dbs.loc[dbs.crm_batch_189, "alkalinity_certified"] = 2205.26  # micromol/kg-sw
 dbs.loc[dbs.crm_batch_189, "salinity"] = 33.494
@@ -55,15 +62,15 @@ dbs.loc[dbs.crm_batch_189, "total_silicate"] = 2.1  # micromol/kg-sw
 dbs.loc[dbs.crm_batch_189, "total_ammonia"] = 0  # micromol/kg-sw
 
 # Assign metadata values for CRMs batch 195
-prefixes = ["CRM-195-"]
+prefixes = "CRM-195-"
 dbs["crm"] = dbs.bottle.str.startswith("CRM")
-dbs["crm_batch_195"] = dbs.bottle.str.startswith(tuple(prefixes))
-dbs.loc[dbs.crm_batch_189, "dic_certified"] = 2024.96 # micromol/kg-sw
-dbs.loc[dbs.crm_batch_189, "alkalinity_certified"] = 2213.51  # micromol/kg-sw
-dbs.loc[dbs.crm_batch_189, "salinity"] = 33.485
-dbs.loc[dbs.crm_batch_189, "total_phosphate"] = 0.49  # micromol/kg-sw
-dbs.loc[dbs.crm_batch_189, "total_silicate"] = 3.6  # micromol/kg-sw
-dbs.loc[dbs.crm_batch_189, "total_ammonia"] = 0  # micromol/kg-sw
+dbs["crm_batch_195"] = dbs.bottle.str.startswith(prefixes)
+dbs.loc[dbs.crm_batch_195, "dic_certified"] = 2024.96 # micromol/kg-sw
+dbs.loc[dbs.crm_batch_195, "alkalinity_certified"] = 2213.51  # micromol/kg-sw
+dbs.loc[dbs.crm_batch_195, "salinity"] = 33.485
+dbs.loc[dbs.crm_batch_195, "total_phosphate"] = 0.49  # micromol/kg-sw
+dbs.loc[dbs.crm_batch_195, "total_silicate"] = 3.6  # micromol/kg-sw
+dbs.loc[dbs.crm_batch_195, "total_ammonia"] = 0  # micromol/kg-sw
 
 # Assign temperature = 25.0 for VINDTA analysis temperature
 dbs["temperature_override"] = 25.0
@@ -97,8 +104,9 @@ dbs.loc[dbs['bottle']=='CRM-189-0159-3', 'file_good'] = False
 # Calibrate and solve alkalinity and plot calibration
 calk.io.get_VINDTA_filenames(dbs)
 calk.dataset.calibrate(dbs)
+# update titrant molity value in dbs file
 calk.dataset.solve(dbs)
-calk.plot.titrant_molinity(dbs, figure_fname="figs/LD_storage_test_TA/titrant_molinity.png", show_bad=False)
+calk.plot.titrant_molinity(dbs, figure_fname="figs/LD_storage_test_TA/titrant_molinity.png", show_bad=False, xvar="analysis_datenum")
 calk.plot.alkalinity_offset(dbs, figure_fname="figs/LD_storage_test_TA/alkalinity_offset.png", show_bad=False)
 
 # Demote dbs to a standard DataFrame
@@ -143,6 +151,11 @@ for batch in batches:
     statistics.loc[statistics['batch_number']==batch, 'standard_error_all_batches'] = stats.mstats.sem(dbs['alkalinity'][L], axis=None, ddof=0)
 
 statistics.to_csv('./data/stats_vindta.csv', index=False)
+
+# === ISOLATE HANNA'S DATA
+L = dbs.bottle.str.startswith("H")
+hanna = dbs[L]
+hanna_mean = round(hanna.alkalinity.mean(), 2)
 
 # === PLOT
 # Create figure
