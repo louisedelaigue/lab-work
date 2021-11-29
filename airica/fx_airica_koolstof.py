@@ -52,7 +52,7 @@ def read_dbs(filepath_or_buffer, encoding="unicode_escape", na_values="none", **
 
 
 def process_airica(
-    crm_val,
+    # crms_val,
     db,
     dbs_filepath,
     results_file_path_and_name=None,
@@ -96,31 +96,38 @@ def process_airica(
     # Average areas with all areas and only last 3 areas
     db["area_av_4"] = (db.area_1 + db.area_2 + db.area_3 + db.area_4) / 4
     db["area_av_3"] = (db.area_2 + db.area_3 + db.area_4) / 3
+   
 
     # Calculate DIC * density * sample_v
-    db["CT_d_sample_v"] = crm_val * db.density_analysis * db.sample_v
+    L = db["name"].str.startswith("CRM-189-")
+    db.loc[L, "CT_d_sample_v"] = 2009.48 * db.density_analysis * db.sample_v
+    L = db["name"].str.startswith("CRM-195-")
+    db.loc[L, "CT_d_sample_v"] = 2024.96 * db.density_analysis * db.sample_v
 
     # Create columns to hold conversion factor (CF) values
-    db["a_3"] = np.nan
-    db["a_4"] = np.nan
-    db["b_3"] = np.nan
-    db["b_4"] = np.nan
+    # db["a_3"] = np.nan
+    # db["a_4"] = np.nan
+    # db["b_3"] = np.nan
+    # db["b_4"] = np.nan
 
     # Calculate CRM coeff factor
     def get_CF(db):
         """Calculate conversion factor CF for each analysis batch."""
-        L = db.location == "CRM"
-        b_3, a_3 = stats.linregress(db.area_av_3[L], db.CT_d_sample_v[L])[:2]
-        b_4, a_4 = stats.linregress(db.area_av_3[L], db.CT_d_sample_v[L])[:2]
+        b_3, a_3 = stats.linregress(db.area_av_3, db.CT_d_sample_v)[:2]
+        b_4, a_4 = stats.linregress(db.area_av_3, db.CT_d_sample_v)[:2]
         return pd.Series({"a_3": a_3, "a_4": a_4, "b_3": b_3, "b_4": b_4})
 
-    db_cf = db.groupby(by=["analysis_batch"]).apply(get_CF)
+    L = db.location == "CRM"
+    db_cf = db[L]
+    db_cf = db_cf.groupby(by=["analysis_batch"]).apply(get_CF).reset_index()
 
     # Assign CRM a and b to samples based on analysis batch
-    db["a_3"] = db_cf.loc[db.analysis_batch.values, "a_3"].values
-    db["a_4"] = db_cf.loc[db.analysis_batch.values, "a_4"].values
-    db["b_3"] = db_cf.loc[db.analysis_batch.values, "b_3"].values
-    db["b_4"] = db_cf.loc[db.analysis_batch.values, "b_4"].values
+    db = pd.merge(left=db, right=db_cf, how="left", on="analysis_batch")        
+        
+    # db["a_3"] = db_cf.loc[db.analysis_batch.values, "a_3"].values
+    # db["a_4"] = db_cf.loc[db.analysis_batch.values, "a_4"].values
+    # db["b_3"] = db_cf.loc[db.analysis_batch.values, "b_3"].values
+    # db["b_4"] = db_cf.loc[db.analysis_batch.values, "b_4"].values
 
     # Calculate TCO2 values
     db["TCO2_3"] = np.nan
