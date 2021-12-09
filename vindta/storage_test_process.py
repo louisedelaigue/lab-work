@@ -1,5 +1,6 @@
 import numpy as np, pandas as pd
 from matplotlib import pyplot as plt
+from matplotlib import dates as mdates
 import seaborn as sns
 import koolstof as ks, calkulate as calk
 from pandas.tseries.offsets import DateOffset
@@ -14,6 +15,10 @@ logfile = ks.read_logfile(
 )
 dbs = ks.read_dbs("data/LD_storage_test_TA/LD_storage_test_TA.dbs", logfile=logfile)
 
+# Remove Hanna's samples
+L = dbs["bottle"].str.startswith("H")
+dbs = dbs[~L]
+
 # Create empty metadata columns
 for meta in [
     "salinity",
@@ -25,30 +30,102 @@ for meta in [
 ]:
     dbs[meta] = np.nan
 
+# === DATE ERRORS
 # Modify date error for 06/10/2021
-L = (dbs['analysis_datetime'].dt.day == 2) & (dbs['analysis_datetime'].dt.month == 5) & (dbs['analysis_datetime'].dt.year == 2005) & (dbs['analysis_datetime'].dt.hour < 9)
+L = ((dbs['analysis_datetime'].dt.day == 2) 
+     & (dbs['analysis_datetime'].dt.month == 5) 
+     & (dbs['analysis_datetime'].dt.year == 2005) 
+     & (dbs['analysis_datetime'].dt.hour < 9))
 dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'] + DateOffset(hours=10)
 dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.replace(year=2021, month=10, day=6))
 
 # No date error for 13/10/2021
 
 # # Modify date error for 27/10/2021
-october_list = ["J10", "J11", "J12", "J13", "J14", "J15", "CRM-189-0159-1", "S48", "S71", "S51", "S13", "S75", "S93","S49", "S24", "S99",
-                "J16", "J17", "J18", "S40", "CRM-189-0159-2", "CRM-189-0159-3"]
+october_list = ["J10",
+                "J11",
+                "J12",
+                "J13",
+                "J14",
+                "J15",
+                "CRM-189-0159-1",
+                "S48",
+                "S71",
+                "S51",
+                "S13",
+                "S75",
+                "S93",
+                "S49",
+                "S24",
+                "S99",
+                "J16",
+                "J17",
+                "J18",
+                "S40",
+                "CRM-189-0159-2",
+                "CRM-189-0159-3"
+                ]
 for sample in october_list:
     L = dbs["bottle"] == sample
-    dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.replace(year=2021, month=10, day=27))
+    dbs.loc[L, 'analysis_datetime'] = (dbs['analysis_datetime']
+                                       .apply(lambda dt: dt.replace(year=2021,
+                                                                    month=10,
+                                                                    day=27
+                                                                    )
+                                              )
+                                       )
 
 # # Modify date error for 18/11/2021
-november_list = ["J20", "J21", "J22", "J23", "CRM-195-0052-1", "S10", "S43", "S52", "S73", "S27", "S61", "S83", "S85", "S95", "S42",
-                 "CRM-195-0052-2", "H08", "H07", "H06", "H05", "H04", "H02", "H03-1", "H01-1", "H01-2", "H01-2", "H03-2",
-                 "CRM-195-0052-3", "CRM-195-0052-4"]
+november_list = ["J20",
+                 "J21",
+                 "J22",
+                 "J23",
+                 "CRM-195-0052-1",
+                 "S10", 
+                 "S43",
+                 "S52",
+                 "S73",
+                 "S27",
+                 "S61",
+                 "S83",
+                 "S85",
+                 "S95",
+                 "S42",
+                 "CRM-195-0052-2",
+                 "H08",
+                 "H07",
+                 "H06",
+                 "H05",
+                 "H04",
+                 "H02",
+                 "H03-1",
+                 "H01-1",
+                 "H01-2",
+                 "H01-2",
+                 "H03-2",
+                 "CRM-195-0052-3",
+                 "CRM-195-0052-4"
+                 ]
 
 for sample in november_list:
     L = dbs["bottle"] == sample
-    dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.replace(year=2021, month=11, day=18))
-dbs.loc[L, 'analysis_datetime'] = dbs['analysis_datetime'].apply(lambda dt: dt.replace(year=2021, month=11, day=18))
+    dbs.loc[L, 'analysis_datetime'] = (dbs['analysis_datetime']
+                                       .apply(lambda dt: dt.replace(year=2021,
+                                                                    month=11,
+                                                                    day=18
+                                                                    )
+                                              )
+                                       )
+# dbs.loc[L, 'analysis_datetime'] = (dbs['analysis_datetime']
+#                                    .apply(lambda dt: dt.replace(year=2021,
+#                                                                 month=11,
+#                                                                 day=18
+#                                                                 )
+#                                           )
+#                                    )
 
+# Reparse datenum
+dbs["analysis_datenum"] = mdates.date2num(dbs.analysis_datetime)
 
 # Assign metadata values for CRMs batch 189
 prefixes = "CRM-189-"
@@ -86,11 +163,16 @@ dbs["analyte_volume"] = 95.939  # TA pipette volume in ml
 dbs["file_path"] = "data/LD_storage_test_TA/"
 
 # Assign TA acid batches
+# Here we consider each analysis batch has its own acid batch, although 
+# first 4 analysis had the same bach made 15/09/2021
+# // this remedies the acid drift
 dbs['analysis_batch'] = 1 # made 15/09/2021
+dbs.loc[dbs['analysis_datetime'].dt.day==13, 'analysis_batch'] = 1
+dbs.loc[dbs['analysis_datetime'].dt.day==27, 'analysis_batch'] = 2
+dbs.loc[dbs['analysis_datetime'].dt.day==18, 'analysis_batch'] = 3
 
 # Select which TA CRMs to use/avoid for calibration
 dbs["reference_good"] = ~np.isnan(dbs.alkalinity_certified)
-# dbs.loc[np.isin(dbs.bottle, ["CRM-189-0960-1023-U"]), "reference_good"] = False
 dbs.loc[dbs['bottle']=='CRM-189-0159-3', 'reference_good'] = False
 
 # Ignore bad files
@@ -104,10 +186,85 @@ dbs.loc[dbs['bottle']=='CRM-189-0159-3', 'file_good'] = False
 # Calibrate and solve alkalinity and plot calibration
 calk.io.get_VINDTA_filenames(dbs)
 calk.dataset.calibrate(dbs)
-# update titrant molity value in dbs file
+
+# === REMEDY ACID DRIFT
+# Isolate dbs in new pandas DataFrame
+L = (dbs["bottle"].str.startswith("CRM-")) & (dbs["reference_good"]==True)
+dbs_crms = dbs[L] 
+
+# Apply np.polytfit (order 3) to CRM titrant molinity
+p = np.polyfit(dbs_crms["analysis_datenum"],
+                dbs_crms["titrant_molinity_here"],
+                3)
+
+f = np.poly1d(p)
+
+# Apply fit to data
+x_new = np.linspace(dbs["analysis_datenum"].min(),
+                    dbs["analysis_datenum"].max(),
+                    100)
+y_new = f(x_new)
+
+# Plot fit
+# Create figure
+fig, ax = plt.subplots(dpi=300)
+
+# Plot fit
+sns.lineplot(x=x_new,
+              y=y_new,
+              color='xkcd:blue',
+              label="Polynomial fit (deg 3)",
+              ax=ax)
+
+# Scatter titrant molinity from CRMs
+sns.scatterplot(x="analysis_datenum",
+                y="titrant_molinity_here",
+                data=dbs_crms,
+                color='xkcd:blue',
+                label="CRMs titrant molinity",
+                ax=ax)
+
+# Apply fit to titrant molinity from CRMs
+dbs_crms["titrant_molinity_polyfit"] = f(dbs_crms["analysis_datenum"])
+
+# Take the mean from the polyfit titrant molinities
+molinity_coefficient = dbs_crms["titrant_molinity_polyfit"].mean()
+
+# Update titrant molity value in dbs file
+# dbs["titrant_molinity"] = f(dbs["analysis_datenum"])
+# dbs["titrant_molinity"] = molinity_coefficient
+
+# Update titrant molinity value in dbs file
+# analysis_dates = dbs["analysis_datetime"].dt.day.unique().tolist()
+# for date in analysis_dates:
+#     A = dbs["analysis_datetime"].dt.day==date
+#     B = dbs_crms["analysis_datetime"].dt.day==date
+#     dbs.loc[A, "titrant_molinity"] = dbs_crms.loc[B, "titrant_molinity_polyfit"].mean()
+
+analysis_batch = dbs["analysis_batch"].unique().tolist()
+for batch in analysis_batch:
+    A = dbs["analysis_batch"]==batch
+    B = dbs_crms["analysis_batch"]==batch
+    dbs.loc[A, "titrant_molinity"] = dbs_crms.loc[B, "titrant_molinity_polyfit"].mean()
+
+# dbs.loc[dbs['analysis_datetime'].dt.day==6,'titrant_molinity'] = 0.099252498
+# dbs.loc[dbs['analysis_datetime'].dt.day==13, 'titrant_molinity'] = 0.099252528
+# dbs.loc[dbs['analysis_datetime'].dt.day==27, 'titrant_molinity'] = 0.099252474
+# dbs.loc[dbs['analysis_datetime'].dt.day==18, 'titrant_molinity'] = 0.099252388
+
+# == CONTINUE SOLVING
+titrant_molinity_fname = "figs/LD_storage_test_TA/titrant_molinity.png"
+alkalinity_offset_fname = "figs/LD_storage_test_TA/alkalinity_offset.png"
 calk.dataset.solve(dbs)
-calk.plot.titrant_molinity(dbs, figure_fname="figs/LD_storage_test_TA/titrant_molinity.png", show_bad=False, xvar="analysis_datenum")
-calk.plot.alkalinity_offset(dbs, figure_fname="figs/LD_storage_test_TA/alkalinity_offset.png", show_bad=False)
+calk.plot.titrant_molinity(dbs,
+                           figure_fname=titrant_molinity_fname,
+                           show_bad=False,
+                           xvar="analysis_datenum"
+                           )
+calk.plot.alkalinity_offset(dbs,
+                            figure_fname=alkalinity_offset_fname,
+                            show_bad=False
+                            )
 
 # Demote dbs to a standard DataFrame
 dbs = pd.DataFrame(dbs)
@@ -142,20 +299,27 @@ for batch in batches:
     L = ((dbs['bottle'].str.startswith('S')) 
          & (dbs['alkalinity'].notnull())
          & (dbs['group']==batch))
-    statistics.loc[statistics['batch_number']==batch, 'analysis_date'] = dbs['analysis_datetime'][L].dt.date.iloc[0]
-    statistics.loc[statistics['batch_number']==batch, 'n_samples'] = dbs['alkalinity'][L].count()
-    statistics.loc[statistics['batch_number']==batch, 'mean'] = dbs['alkalinity'][L].mean()
-    statistics.loc[statistics['batch_number']==batch, 'median'] = dbs['alkalinity'][L].median()
-    statistics.loc[statistics['batch_number']==batch, 'standard_error_batch'] = stats.mstats.sem(dbs['alkalinity'][L], axis=None, ddof=0)
+    A = statistics['batch_number']==batch
+    statistics.loc[A, 'analysis_date'] = dbs['analysis_datetime'][L].dt.date.iloc[0]
+    statistics.loc[A, 'n_samples'] = dbs['alkalinity'][L].count()
+    statistics.loc[A, 'mean'] = dbs['alkalinity'][L].mean()
+    statistics.loc[A, 'median'] = dbs['alkalinity'][L].median()
+    statistics.loc[A, 'standard_error_batch'] = stats.mstats.sem(dbs['alkalinity'][L],
+                                                                 axis=None,
+                                                                 ddof=0
+                                                                 )
     L = (dbs['bottle'].str.startswith('S')) & (dbs['alkalinity'].notnull())
-    statistics.loc[statistics['batch_number']==batch, 'standard_error_all_batches'] = stats.mstats.sem(dbs['alkalinity'][L], axis=None, ddof=0)
+    statistics.loc[A, 'standard_error_all_batches'] = stats.mstats.sem(dbs['alkalinity'][L],
+                                                                       axis=None,
+                                                                       ddof=0
+                                                                       )
 
 statistics.to_csv('./data/stats_vindta.csv', index=False)
 
 # === ISOLATE HANNA'S DATA
-L = dbs.bottle.str.startswith("H")
-hanna = dbs[L]
-hanna_mean = round(hanna.alkalinity.mean(), 2)
+# L = dbs.bottle.str.startswith("H")
+# hanna = dbs[L]
+# hanna_mean = round(hanna.alkalinity.mean(), 2)
 
 # === PLOT
 # Create figure
