@@ -21,3 +21,6 @@ df['pH_recalc'] = pyco2.sys(
 )['pH_out']
 
 df['pH_recalc'] = round(df['pH_recalc'], 3)
+
+# Save as csv
+df.to_csv("data/vials_test/results.csv", index=False)
