@@ -7,6 +7,7 @@ from scipy import stats
 import seaborn as sns
 from calkulate.density import seawater_1atm_MP81
 import matplotlib.pyplot as plt
+import itertools
 
 
 # Extract data from dbs
@@ -94,9 +95,7 @@ def process_airica(
     )
 
     # Average areas with all areas and only last 3 areas
-    db["area_av_4"] = (db.area_1 + db.area_2 + db.area_3 + db.area_4) / 4
     db["area_av_3"] = (db.area_2 + db.area_3 + db.area_4) / 3
-   
 
     # Calculate DIC * density * sample_v
     L = db["name"].str.startswith("CRM-189-")
@@ -104,18 +103,11 @@ def process_airica(
     L = db["name"].str.startswith("CRM-195-")
     db.loc[L, "CT_d_sample_v"] = 2024.96 * db.density_analysis * db.sample_v
 
-    # Create columns to hold conversion factor (CF) values
-    # db["a_3"] = np.nan
-    # db["a_4"] = np.nan
-    # db["b_3"] = np.nan
-    # db["b_4"] = np.nan
-
     # Calculate CRM coeff factor
     def get_CF(db):
         """Calculate conversion factor CF for each analysis batch."""
-        b_3, a_3 = stats.linregress(db.area_av_3, db.CT_d_sample_v)[:2]
-        b_4, a_4 = stats.linregress(db.area_av_3, db.CT_d_sample_v)[:2]
-        return pd.Series({"a_3": a_3, "a_4": a_4, "b_3": b_3, "b_4": b_4})
+        b, a = stats.linregress(db.area_av_3, db.CT_d_sample_v)[:2]
+        return pd.Series({"a": a, "b": b})
 
     L = db.location == "CRM"
     db_cf = db[L]
@@ -125,45 +117,80 @@ def process_airica(
     db = pd.merge(left=db, right=db_cf, how="left", on="analysis_batch")        
 
     # Calculate TCO2 values
-    db["TCO2_3"] = np.nan
-    db["TCO2_4"] = np.nan
-    db["TCO2_3"] = ((db.b_3 * db.area_av_3) + db.a_3) / (
-        db.density_analysis * db.sample_v
-    )
-    db["TCO2_4"] = ((db.b_4 * db.area_av_4) + db.a_4) / (
+    db["TCO2"] = ((db.b * db.area_av_3) + db.a) / (
         db.density_analysis * db.sample_v
     )
 
     if draw_figure:
+        # Prepare colours and markers
+        markers = itertools.cycle(("o", "^", "s", "v", "D", "<", ">"))
+        colors = itertools.cycle(
+            (
+                "xkcd:purple",
+                "xkcd:green",
+                "xkcd:blue",
+                "xkcd:pink",
+                "xkcd:deep blue",
+                "xkcd:red",
+                "xkcd:teal",
+                "xkcd:orange",
+                "xkcd:fuchsia"
+            )
+        )
         # Plot linear regresion of CRM calibration
+        batches = db["analysis_batch"].unique().tolist()
+        
         # Create figure
         f, ax = plt.subplots(dpi=300)
 
-        # Scatter plot CRM data
+        # Linear regression through CRMs       
         L = db.location == "CRM"
         sns.regplot(
             x=db.area_av_3[L],
             y=db.CT_d_sample_v[L],
+            scatter=False,
+            color="xkcd:black",
             ci=False,
-            color="xkcd:primary blue",
-        )
-
-        xmin = 15000 #db['area_av_3'].min()
-        xmax = 30000 #db['area_av_3'].max()
-        plt.xlim([xmin, xmax])
-
-        # Add R2^2 to graph
-        r2 = stats.linregress(db.area_av_3[L], db.CT_d_sample_v[L])[2]
-        r2s = str(round(r2, 2))
-        text = "$R^2$ = " + r2s
-        text_x = db.area_av_3.max()*0.75
-        text_y = db.CT_d_sample_v.max()*0.9
-        ax.text(text_x, text_y, text, horizontalalignment='left',
-            verticalalignment='center', fontsize=15)
+            ax=ax,
+            line_kws={"zorder":0, "linestyle":"--", "alpha":0.7}
+            )
+        
+        # Scatter CRM points
+        for batch in batches:
+            L = db["analysis_batch"]==batch
+            data = db[L]
+            m = next(markers)
+            c = next(colors)
+            
+            L = db.location == "CRM"
+                    
+            sns.scatterplot(
+                x=data.area_av_3[L],
+                y=data.CT_d_sample_v[L],
+                ci=False,
+                color=c,
+                marker=m,
+                label=data["analysis_date"].unique(),
+                ax=ax
+                )
 
         # Improve figure
-        ax.grid(alpha=0.3)
-        plt.tight_layout()
+        xmin = db[L]['area_av_3'].min() - 500
+        xmax = db[L]['area_av_3'].max() + 500
+        plt.xlim([xmin, xmax])
+        
+        ax.set_xlabel('$AREA_{average}$')
+        ax.set_ylabel('$TCO_{2}$ x density x volume')
+        
+        ax.grid(alpha=0.3)       
+        ax.legend(title="Analysis date", fontsize='small', fancybox=True)
+
+        # Add R2^2 to graph
+        r = stats.linregress(db.area_av_3[L], db.CT_d_sample_v[L])[2]
+        r2 = r**2
+        r2s = str(round(r2, 2))
+        text = "$R^2$ = " + r2s
+        plt.annotate(text, xy=(0.3, 0.925), xycoords='axes fraction')
 
     # Save results as text file
     if results_file_path_and_name is not None:
