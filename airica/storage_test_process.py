@@ -5,7 +5,7 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 
 # Import lab file
-db = pd.read_excel('./data/LD_storage_test/AIRICA_storage_test_mod_291121.xlsx',
+db = pd.read_excel('./data/LD_storage_test/AIRICA_storage_test_mod_20012022.xlsx',
                    na_values=-9999)
 
 # Remove nan
@@ -22,11 +22,11 @@ db = db[~L]
 
 # Process AIRICA data
 results = process_airica(db,
-                         './data/LD_storage_test/LD_storage_test_mod_291121.dbs'
-                         # './data/LD_storage_test/results_storage_test.csv',
+                         './data/LD_storage_test/LD_storage_test_mod_20012022.dbs'
+                          # './data/LD_storage_test/results_storage_test.csv',
                     )
 
-# results.to_csv('./data/LD_storage_test/results.csv', index=False)
+results.to_csv('./data/LD_storage_test/results.csv', index=False)
 
 # Drop analysis_batch = 5 (AIRICA malfunction)
 L = results["analysis_batch"] == 5

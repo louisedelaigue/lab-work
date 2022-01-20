@@ -115,7 +115,7 @@ def process_airica(
 
     # Assign CRM a and b to samples based on analysis batch
     db = pd.merge(left=db, right=db_cf, how="left", on="analysis_batch")        
-
+    print(db)
     # Calculate TCO2 values
     db["TCO2"] = ((db.b * db.area_av_3) + db.a) / (
         db.density_analysis * db.sample_v
