@@ -21,10 +21,10 @@ db = db[~L]
 # db = db[~L]
 
 # TEST - Ignore sample CRMS from 20/01/2022
-L = db['name'] =="CRM-189-0468-17"
-db = db[~L]
-L = db['name'] =="CRM-195-0078-25"
-db = db[~L]
+# L = db['name'] =="CRM-189-0468-17"
+# db = db[~L]
+# L = db['name'] =="CRM-195-0078-25"
+# db = db[~L]
 
 # Process AIRICA data
 results = process_airica(db,
