@@ -20,10 +20,16 @@ db = db[~L]
 # L = db['name'] == 'U12'
 # db = db[~L]
 
+# TEST - Ignore sample CRMS from 20/01/2022
+L = db['name'] =="CRM-189-0468-17"
+db = db[~L]
+L = db['name'] =="CRM-195-0078-25"
+db = db[~L]
+
 # Process AIRICA data
 results = process_airica(db,
-                         './data/LD_storage_test/LD_storage_test_mod_20012022.dbs'
-                          # './data/LD_storage_test/results_storage_test.csv',
+                         './data/LD_storage_test/LD_storage_test_mod_20012022.dbs',
+                           './data/LD_storage_test/results_storage_test.csv',
                     )
 
 results.to_csv('./data/LD_storage_test/results.csv', index=False)
