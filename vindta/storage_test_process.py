@@ -165,11 +165,13 @@ dbs["file_path"] = "data/LD_storage_test_TA/"
 # Assign TA acid batches
 # Here we consider each analysis batch has its own acid batch, although 
 # first 4 analysis had the same bach made 15/09/2021
+# Second acid batch made on 19/01/2022
 # // this remedies the acid drift
 dbs['analysis_batch'] = 1 # made 15/09/2021
 dbs.loc[dbs['analysis_datetime'].dt.day==13, 'analysis_batch'] = 2
 dbs.loc[dbs['analysis_datetime'].dt.day==27, 'analysis_batch'] = 3
 dbs.loc[dbs['analysis_datetime'].dt.day==18, 'analysis_batch'] = 4
+dbs.loc[dbs['analysis_datetime'].dt.day==19, 'analysis_batch'] = 5
 
 # Select which TA CRMs to use/avoid for calibration
 dbs["reference_good"] = ~np.isnan(dbs.alkalinity_certified)
@@ -182,6 +184,8 @@ dbs.loc[dbs['bottle']=='S24', 'file_good'] = False
 dbs.loc[dbs['bottle']=='S99', 'file_good'] = False
 dbs.loc[dbs['bottle']=='J17', 'file_good'] = False
 dbs.loc[dbs['bottle']=='CRM-189-0159-3', 'file_good'] = False
+dbs.loc[dbs["bottle"]=="S04", "file_good"] = False
+dbs.loc[dbs["bottle"]=="S04_2", "file_good"] = False
 
 # Calibrate and solve alkalinity and plot calibration
 calk.io.get_VINDTA_filenames(dbs)
