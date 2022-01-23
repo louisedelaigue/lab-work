@@ -6,8 +6,7 @@ import numpy as np
 process_ph("./data/RWS_01_11.xlsx", "./results/results_rws_30.csv")
 
 # Import data
-data = pd.read_csv('./data_rws/data_v7.csv',
-                   skiprows=[1])
+data = pd.read_csv("./data_rws/data_v7.csv", skiprows=[1])
 optode_file = "./results/results_rws_20"
 optode = pd.read_csv(optode_file + ".csv")
 
@@ -41,5 +40,5 @@ def get_station_bottle_data(row):
 
 # Apply the function to the whole table to get the data, then save as new CSV
 optode = optode.join(optode.apply(get_station_bottle_data, axis=1))
-optode = optode.replace(r'^\s*$', np.nan, regex=True)
+optode = optode.replace(r"^\s*$", np.nan, regex=True)
 optode.to_csv(optode_file + "_comparison.csv")

@@ -7,9 +7,10 @@ from scipy import stats
 
 # import data
 exec(open("B1_fx_airica.py").read())
-process_airica(2012.59, './data/RWS_01_11_DIC.xlsx',
-              './data/LDRWS1.dbs', './results_rws.csv')
-db = pd.read_csv('./results_rws.csv')
+process_airica(
+    2012.59, "./data/RWS_01_11_DIC.xlsx", "./data/LDRWS1.dbs", "./results_rws.csv"
+)
+db = pd.read_csv("./results_rws.csv")
 
 #%% scatterplot 3 areas vs 4 areas
 f, ax = plt.subplots(figsize=(8, 6.5), dpi=300)
@@ -25,8 +26,8 @@ x_values = [x[0], y[0]]
 y_values = [x[1], y[1]]
 
 # axis limits
-ax.set_xlim([1800,2400])
-ax.set_ylim([1800,2400])
+ax.set_xlim([1800, 2400])
+ax.set_ylim([1800, 2400])
 
 # scattering
 ax = sns.lineplot(x=x_values, y=y_values, ax=ax, color="black")
@@ -42,17 +43,23 @@ text = "$R^2$ = " + r2s
 plt.tight_layout()
 ax.set_xlabel("$DIC_{3 AREAS}$")
 ax.set_ylabel("$DIC_{4 AREAS}$")
-ax.text(1850, 2350, text, horizontalalignment='left',
-        verticalalignment='center', fontsize=15)
+ax.text(
+    1850,
+    2350,
+    text,
+    horizontalalignment="left",
+    verticalalignment="center",
+    fontsize=15,
+)
 
 # save figure
-plt.savefig('./figures/scatter_3areas_vs_4areas.png', format = 'png')
+plt.savefig("./figures/scatter_3areas_vs_4areas.png", format="png")
 plt.show()
 
 #%% stats given duplicate samples
 stats = pd.DataFrame()
-stats['CRM_std_err1_3'] = np.nan
+stats["CRM_std_err1_3"] = np.nan
 
 # standard error per analysis batch
-L = (db.analysis_batch == 1) & (db.location == 'CRM')
-stats['CRM_std_err1_3'] = sem(db.TCO2_3[L])
+L = (db.analysis_batch == 1) & (db.location == "CRM")
+stats["CRM_std_err1_3"] = sem(db.TCO2_3[L])

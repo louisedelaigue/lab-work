@@ -10,18 +10,17 @@ from scipy import stats
 exec(open("fx_ph_optode.py").read())
 exec(open("merge_optode_rws.py").read())
 
-# import data 
-datac = pd.read_csv('./results/results_rws_comparison.csv',
-                   skiprows=[1])
-#datac = datac.drop(datac.tail(1).index) # systematically drops last CRM
+# import data
+datac = pd.read_csv("./results/results_rws_comparison.csv", skiprows=[1])
+# datac = datac.drop(datac.tail(1).index) # systematically drops last CRM
 
 # replace nan by "CRM" for station/bottle columns
-datac.bottle.replace(np.nan, 'CRM', regex=True, inplace=True)
-datac.station.replace(np.nan, 'CRM', regex=True, inplace=True)
+datac.bottle.replace(np.nan, "CRM", regex=True, inplace=True)
+datac.station.replace(np.nan, "CRM", regex=True, inplace=True)
 
 # create name column
 datac.bottle = datac.bottle.astype(str)
-datac["name"] = datac["station"] +"_"+ datac["bottle"]
+datac["name"] = datac["station"] + "_" + datac["bottle"]
 
 # create new columns to store diff
 datac["diff_opt_calc"] = np.nan
@@ -34,8 +33,8 @@ datac["diff_opt_vindta"] = datac["pH_s0_mean"] - datac["pH_vindta_total_20"]
 
 # remove CRM and outliers (according to lab flags)
 indexCRM = datac[datac["name"] == "CRM_CRM"].index
-datac.drop(indexCRM, inplace = True)
-L = (datac.flag == 2)
+datac.drop(indexCRM, inplace=True)
+L = datac.flag == 2
 datac = datac[L]
 
 #%% scatterplot all method different subplots
@@ -56,12 +55,33 @@ ax1 = sns.lineplot(x=x_values, y=y_values, ax=ax[0], color="black")
 ax2 = sns.lineplot(x=x_values, y=y_values, ax=ax[1], color="black")
 ax3 = sns.lineplot(x=x_values, y=y_values, ax=ax[2], color="black")
 
-sns.scatterplot(x="pH_s0_mean", y="pH_calc12_total_20", palette = "cool",
-                hue="diff_opt_calc", s=150, data=datac, ax=ax[0])
-sns.scatterplot(x="pH_s0_mean", y="pH_spectro_total_20", palette = "cool",
-                hue="diff_opt_spec", s=150, data=datac, ax=ax[1])
-sns.scatterplot(x="pH_s0_mean", y="pH_vindta_total_20", palette = "cool",
-                hue="diff_opt_vindta", s=150, data=datac, ax=ax[2])
+sns.scatterplot(
+    x="pH_s0_mean",
+    y="pH_calc12_total_20",
+    palette="cool",
+    hue="diff_opt_calc",
+    s=150,
+    data=datac,
+    ax=ax[0],
+)
+sns.scatterplot(
+    x="pH_s0_mean",
+    y="pH_spectro_total_20",
+    palette="cool",
+    hue="diff_opt_spec",
+    s=150,
+    data=datac,
+    ax=ax[1],
+)
+sns.scatterplot(
+    x="pH_s0_mean",
+    y="pH_vindta_total_20",
+    palette="cool",
+    hue="diff_opt_vindta",
+    s=150,
+    data=datac,
+    ax=ax[2],
+)
 
 # axis labels
 ax1.set_xlabel("$pH_{optode}$ @ 20°C")
@@ -71,7 +91,7 @@ ax1.set_ylabel("$pH_{calc}$ @ 20°C")
 ax2.set_ylabel("$pH_{spectro}$ @ 20°C")
 ax3.set_ylabel("$pH_{VINDTA}$ @ 20°C")
 
-# legend 
+# legend
 for ax in ax:
     L = ax.legend()
     L.get_texts()[0].set_text("Difference")
@@ -79,7 +99,7 @@ for ax in ax:
 plt.tight_layout()
 
 # save plot
-plt.savefig('./figures/scatter_all_methods.png', format = 'png')
+plt.savefig("./figures/scatter_all_methods.png", format="png")
 plt.show()
 
 # calc stats linregress
@@ -89,12 +109,15 @@ mask2 = ~np.isnan(datac.pH_s0_mean) & ~np.isnan(datac.pH_calc12_total_20)
 mask3 = ~np.isnan(datac.pH_s0_mean) & ~np.isnan(datac.pH_vindta_total_20)
 
 # calc R2
-r2_0_spectro = stats.linregress(datac.pH_s0_mean[mask1],
-                                datac.pH_spectro_total_20[mask1])[2]  
-r2_0_calc = stats.linregress(datac.pH_s0_mean[mask2],
-                             datac.pH_calc12_total_20[mask2])[2] 
-r2_0_vindta = stats.linregress(datac.pH_s0_mean[mask3],
-                               datac.pH_vindta_total_20[mask3])[2] 
+r2_0_spectro = stats.linregress(
+    datac.pH_s0_mean[mask1], datac.pH_spectro_total_20[mask1]
+)[2]
+r2_0_calc = stats.linregress(datac.pH_s0_mean[mask2], datac.pH_calc12_total_20[mask2])[
+    2
+]
+r2_0_vindta = stats.linregress(
+    datac.pH_s0_mean[mask3], datac.pH_vindta_total_20[mask3]
+)[2]
 
 #%% scatterplot all methods on same plot per station
 f, ax = plt.subplots(figsize=(20, 6.5), dpi=300)
@@ -104,18 +127,36 @@ sns.set(font="Verdana", font_scale=1)
 sns.despine(f, left=True, bottom=True)
 
 # sort by station
-datac = datac.sort_values(by = "name")
+datac = datac.sort_values(by="name")
 
 # vertical line at diff = 0
-ax.axhline(y=0, linewidth=3, color='xkcd:black')
+ax.axhline(y=0, linewidth=3, color="xkcd:black")
 
 # plotting
-ax1 = ax.plot(datac.name, datac.diff_opt_calc, c="xkcd:cyan", linewidth=3,
-              label="$∆pH_{calc}$", marker="o")
-ax2 = ax.plot(datac.name, datac.diff_opt_spec,  c="xkcd:fuchsia", linewidth=3,
-              label = "$∆pH_{spectro}$", marker="o")
-ax3 = ax.plot(datac.name, datac.diff_opt_vindta, c="xkcd:blue violet",
-              linewidth=3, label = "$∆pH_{VINDTA}$",  marker="o")
+ax1 = ax.plot(
+    datac.name,
+    datac.diff_opt_calc,
+    c="xkcd:cyan",
+    linewidth=3,
+    label="$∆pH_{calc}$",
+    marker="o",
+)
+ax2 = ax.plot(
+    datac.name,
+    datac.diff_opt_spec,
+    c="xkcd:fuchsia",
+    linewidth=3,
+    label="$∆pH_{spectro}$",
+    marker="o",
+)
+ax3 = ax.plot(
+    datac.name,
+    datac.diff_opt_vindta,
+    c="xkcd:blue violet",
+    linewidth=3,
+    label="$∆pH_{VINDTA}$",
+    marker="o",
+)
 
 # axis labels
 plt.xticks(rotation=90)
@@ -127,7 +168,7 @@ ax.legend()
 plt.tight_layout()
 
 # save plot
-plt.savefig('./figures/plot_diff_stations.png', format = 'png')
+plt.savefig("./figures/plot_diff_stations.png", format="png")
 plt.show()
 
 #%% scatter diff through time
@@ -144,48 +185,102 @@ sns.set(font="Verdana", font_scale=1)
 sns.despine(f, left=True, bottom=True)
 
 # linear regression
-ax1 = sns.regplot(datac.index[datac.analysis_date == day1],
-                  datac.diff_opt_calc[datac.analysis_date == day1],
-                  fit_reg=True, marker='o', label="$∆pH_{calc}$",
-                  color="xkcd:cyan", ci=None, ax=ax[0])
-sns.regplot(datac.index[datac.analysis_date == day1],
-                  datac.diff_opt_spec[datac.analysis_date == day1],
-                  fit_reg=True, marker='o', label = "$∆pH_{spectro}$",
-                  color="xkcd:fuchsia", ci=None, ax=ax[0])
-sns.regplot(datac.index[datac.analysis_date == day1],
-                  datac.diff_opt_vindta[datac.analysis_date == day1],
-                  fit_reg=True, marker='o', label = "$∆pH_{VINDTA}$",
-                  color="xkcd:blue violet", ci=None, ax=ax[0])
+ax1 = sns.regplot(
+    datac.index[datac.analysis_date == day1],
+    datac.diff_opt_calc[datac.analysis_date == day1],
+    fit_reg=True,
+    marker="o",
+    label="$∆pH_{calc}$",
+    color="xkcd:cyan",
+    ci=None,
+    ax=ax[0],
+)
+sns.regplot(
+    datac.index[datac.analysis_date == day1],
+    datac.diff_opt_spec[datac.analysis_date == day1],
+    fit_reg=True,
+    marker="o",
+    label="$∆pH_{spectro}$",
+    color="xkcd:fuchsia",
+    ci=None,
+    ax=ax[0],
+)
+sns.regplot(
+    datac.index[datac.analysis_date == day1],
+    datac.diff_opt_vindta[datac.analysis_date == day1],
+    fit_reg=True,
+    marker="o",
+    label="$∆pH_{VINDTA}$",
+    color="xkcd:blue violet",
+    ci=None,
+    ax=ax[0],
+)
 
-ax2 = sns.regplot(datac.index[datac.analysis_date == day2],
-                  datac.diff_opt_calc[datac.analysis_date == day2],
-                  fit_reg=True, marker='o', label="$∆pH_{calc}$",
-                  color="xkcd:cyan", ci=None, ax=ax[1])
-sns.regplot(datac.index[datac.analysis_date == day2],
-                  datac.diff_opt_spec[datac.analysis_date == day2],
-                  fit_reg=True, marker='o', label = "$∆pH_{spectro}$",
-                  color="xkcd:fuchsia", ci=None, ax=ax[1])
-sns.regplot(datac.index[datac.analysis_date == day2],
-                  datac.diff_opt_vindta[datac.analysis_date == day2],
-                  fit_reg=True, marker='o', label = "$∆pH_{VINDTA}$",
-                  color="xkcd:blue violet", ci=None, ax=ax[1])
+ax2 = sns.regplot(
+    datac.index[datac.analysis_date == day2],
+    datac.diff_opt_calc[datac.analysis_date == day2],
+    fit_reg=True,
+    marker="o",
+    label="$∆pH_{calc}$",
+    color="xkcd:cyan",
+    ci=None,
+    ax=ax[1],
+)
+sns.regplot(
+    datac.index[datac.analysis_date == day2],
+    datac.diff_opt_spec[datac.analysis_date == day2],
+    fit_reg=True,
+    marker="o",
+    label="$∆pH_{spectro}$",
+    color="xkcd:fuchsia",
+    ci=None,
+    ax=ax[1],
+)
+sns.regplot(
+    datac.index[datac.analysis_date == day2],
+    datac.diff_opt_vindta[datac.analysis_date == day2],
+    fit_reg=True,
+    marker="o",
+    label="$∆pH_{VINDTA}$",
+    color="xkcd:blue violet",
+    ci=None,
+    ax=ax[1],
+)
 
-ax3 = sns.regplot(datac.index[datac.analysis_date == day3],
-                  datac.diff_opt_calc[datac.analysis_date == day3],
-                  fit_reg=True, marker='o', label="$∆pH_{calc}$",
-                  color="xkcd:cyan", ci=None, ax=ax[2])
-sns.regplot(datac.index[datac.analysis_date == day3],
-                  datac.diff_opt_spec[datac.analysis_date == day3],
-                  fit_reg=True, marker='o', label = "$∆pH_{spectro}$",
-                  color="xkcd:fuchsia", ci=None, ax=ax[2])
-sns.regplot(datac.index[datac.analysis_date == day3],
-                  datac.diff_opt_vindta[datac.analysis_date == day3],
-                  fit_reg=True, marker='o', label = "$∆pH_{VINDTA}$",
-                  color="xkcd:blue violet", ci=None, ax=ax[2])
+ax3 = sns.regplot(
+    datac.index[datac.analysis_date == day3],
+    datac.diff_opt_calc[datac.analysis_date == day3],
+    fit_reg=True,
+    marker="o",
+    label="$∆pH_{calc}$",
+    color="xkcd:cyan",
+    ci=None,
+    ax=ax[2],
+)
+sns.regplot(
+    datac.index[datac.analysis_date == day3],
+    datac.diff_opt_spec[datac.analysis_date == day3],
+    fit_reg=True,
+    marker="o",
+    label="$∆pH_{spectro}$",
+    color="xkcd:fuchsia",
+    ci=None,
+    ax=ax[2],
+)
+sns.regplot(
+    datac.index[datac.analysis_date == day3],
+    datac.diff_opt_vindta[datac.analysis_date == day3],
+    fit_reg=True,
+    marker="o",
+    label="$∆pH_{VINDTA}$",
+    color="xkcd:blue violet",
+    ci=None,
+    ax=ax[2],
+)
 
 # vertical line at diff = 0
 for ax in ax:
-    ax.axhline(y=0, linewidth=2, color='xkcd:black')
+    ax.axhline(y=0, linewidth=2, color="xkcd:black")
 
 # axis limits
 ax1.set_ylim([-0.035, 0.015])
@@ -214,7 +309,7 @@ ax3.legend(loc="lower left")
 plt.tight_layout()
 
 # save plot
-plt.savefig('./figures/diff_vs_time.png', format = 'png')
+plt.savefig("./figures/diff_vs_time.png", format="png")
 plt.show()
 
 #%% plot to compare diff vs time_to_eq
@@ -235,26 +330,62 @@ ax1 = sns.lineplot(x=x_values, y=y_values, ax=ax[0], color="black")
 ax2 = sns.lineplot(x=x_values, y=y_values, ax=ax[1], color="black")
 ax3 = sns.lineplot(x=x_values, y=y_values, ax=ax[2], color="black")
 
-sns.regplot(x="pH_s0_mean", y="pH_calc12_total_20", color="xkcd:cyan",
-                data=datac[datac.time_to_eq == 20], ci=None,
-                label="20-min", ax=ax[0])
-sns.regplot(x="pH_s0_mean", y="pH_calc12_total_20", color="xkcd:blue violet",
-                data=datac[datac.time_to_eq == 30], ci=None,
-                label="30-min", ax=ax[0])
+sns.regplot(
+    x="pH_s0_mean",
+    y="pH_calc12_total_20",
+    color="xkcd:cyan",
+    data=datac[datac.time_to_eq == 20],
+    ci=None,
+    label="20-min",
+    ax=ax[0],
+)
+sns.regplot(
+    x="pH_s0_mean",
+    y="pH_calc12_total_20",
+    color="xkcd:blue violet",
+    data=datac[datac.time_to_eq == 30],
+    ci=None,
+    label="30-min",
+    ax=ax[0],
+)
 
-sns.regplot(x="pH_s0_mean", y="pH_spectro_total_20", color="xkcd:cyan",
-                data=datac[datac.time_to_eq == 20], ci=None,
-                label="20-min", ax=ax[1])
-sns.regplot(x="pH_s0_mean", y="pH_spectro_total_20", color="xkcd:blue violet",
-                data=datac[datac.time_to_eq == 30], ci=None,
-                label="30-min", ax=ax[1])
+sns.regplot(
+    x="pH_s0_mean",
+    y="pH_spectro_total_20",
+    color="xkcd:cyan",
+    data=datac[datac.time_to_eq == 20],
+    ci=None,
+    label="20-min",
+    ax=ax[1],
+)
+sns.regplot(
+    x="pH_s0_mean",
+    y="pH_spectro_total_20",
+    color="xkcd:blue violet",
+    data=datac[datac.time_to_eq == 30],
+    ci=None,
+    label="30-min",
+    ax=ax[1],
+)
 
-sns.regplot(x="pH_s0_mean", y="pH_vindta_total_20", color="xkcd:cyan",
-                data=datac[datac.time_to_eq == 20], ci=None,
-                label="20-min", ax=ax[2])
-sns.regplot(x="pH_s0_mean", y="pH_vindta_total_20", color="xkcd:blue violet",
-                data=datac[datac.time_to_eq == 30], ci=None,
-                label="30-min", ax=ax[2])
+sns.regplot(
+    x="pH_s0_mean",
+    y="pH_vindta_total_20",
+    color="xkcd:cyan",
+    data=datac[datac.time_to_eq == 20],
+    ci=None,
+    label="20-min",
+    ax=ax[2],
+)
+sns.regplot(
+    x="pH_s0_mean",
+    y="pH_vindta_total_20",
+    color="xkcd:blue violet",
+    data=datac[datac.time_to_eq == 30],
+    ci=None,
+    label="30-min",
+    ax=ax[2],
+)
 
 # axis labels
 ax1.set_xlabel("$pH_{optode}$ @ 20°C")
@@ -272,32 +403,33 @@ ax3.legend(loc="upper left")
 plt.tight_layout()
 
 # save plot
-plt.savefig('./figures/comp_eq_time.png', format = 'png')
+plt.savefig("./figures/comp_eq_time.png", format="png")
 plt.show()
 
 #%% compare time_to_eq = 20 vs time_to_eq = 30 for 5 samples
-data20 = pd.read_csv('./results/results_rws_20_comparison.csv',
-                   skiprows=[1])
-data30 = pd.read_csv('./results/results_rws_30_comparison.csv',
-                   skiprows=[1])
+data20 = pd.read_csv("./results/results_rws_20_comparison.csv", skiprows=[1])
+data30 = pd.read_csv("./results/results_rws_30_comparison.csv", skiprows=[1])
 data20.bottle = datac.bottle.astype(str)
 data30.bottle = datac.bottle.astype(str)
 data20["name"] = np.nan
 data30["name"] = np.nan
-data20["name"] = data20["station"] +"_"+ data20["bottle"]
-data30["name"] = data30["station"] +"_"+ data30["bottle"]
+data20["name"] = data20["station"] + "_" + data20["bottle"]
+data30["name"] = data30["station"] + "_" + data30["bottle"]
 
-data20 = data20.sort_values(by = "name")
-data30 = data30.sort_values(by = "name")
+data20 = data20.sort_values(by="name")
+data30 = data30.sort_values(by="name")
 
 # value diff between 20min and 30min
 diff = pd.DataFrame()
 diff["name"] = data20.name[data20.time_to_eq == 30]
-diff["diff"] = np.abs(data20.pH_s0_mean[data20.time_to_eq == 30] - data30.pH_s0_mean[data30.time_to_eq == 30])
+diff["diff"] = np.abs(
+    data20.pH_s0_mean[data20.time_to_eq == 30]
+    - data30.pH_s0_mean[data30.time_to_eq == 30]
+)
 diff = diff.dropna()
-diff = diff.sort_values(by = "name")
+diff = diff.sort_values(by="name")
 
-# prep plot 
+# prep plot
 f, ax = plt.subplots(figsize=(20, 6.5), dpi=300)
 sns.set_style("darkgrid")
 sns.set_context("paper", font_scale=2)
@@ -305,13 +437,27 @@ sns.set(font="Verdana", font_scale=1)
 sns.despine(f, left=True, bottom=True)
 
 # plotting
-sns.lineplot(x="name", y="pH_s0_mean", color="xkcd:cyan",linewidth=3,
-             marker="o", data=data20[data20.time_to_eq == 30], 
-             label= "20-min", ax=ax)
+sns.lineplot(
+    x="name",
+    y="pH_s0_mean",
+    color="xkcd:cyan",
+    linewidth=3,
+    marker="o",
+    data=data20[data20.time_to_eq == 30],
+    label="20-min",
+    ax=ax,
+)
 
-sns.lineplot(x="name", y="pH_s0_mean", color="xkcd:blue violet",linewidth=3,
-             marker="o", data=data30[data20.time_to_eq == 30], 
-             label="30-min", ax=ax)
+sns.lineplot(
+    x="name",
+    y="pH_s0_mean",
+    color="xkcd:blue violet",
+    linewidth=3,
+    marker="o",
+    data=data30[data20.time_to_eq == 30],
+    label="30-min",
+    ax=ax,
+)
 
 # axis labels
 ax.set_ylabel("$pH_{optode}$ @ 20°C")
@@ -324,7 +470,7 @@ ax.legend()
 plt.tight_layout()
 
 # save plot
-plt.savefig('./figures/20min_vs_30min.png', format = 'png')
+plt.savefig("./figures/20min_vs_30min.png", format="png")
 plt.show()
 
 #%% pH diff vs pH opt
@@ -345,12 +491,36 @@ ax1 = sns.lineplot(x=x_values, y=y_values, ax=ax[0], color="black")
 ax2 = sns.lineplot(x=x_values, y=y_values, ax=ax[1], color="black")
 ax3 = sns.lineplot(x=x_values, y=y_values, ax=ax[2], color="black")
 
-sns.regplot(x="pH_s0_mean", y="diff_opt_calc", color="xkcd:cyan",
-            data=datac, fit_reg=True, marker='o', ci=None, ax=ax[0])
-sns.regplot(x="pH_s0_mean", y="diff_opt_spec", color="xkcd:fuchsia",
-            data=datac, fit_reg=True, marker='o', ci=None, ax=ax[1])
-sns.regplot(x="pH_s0_mean", y="diff_opt_vindta", color="xkcd:blue violet",
-            data=datac, fit_reg=True, marker='o', ci=None, ax=ax[2])
+sns.regplot(
+    x="pH_s0_mean",
+    y="diff_opt_calc",
+    color="xkcd:cyan",
+    data=datac,
+    fit_reg=True,
+    marker="o",
+    ci=None,
+    ax=ax[0],
+)
+sns.regplot(
+    x="pH_s0_mean",
+    y="diff_opt_spec",
+    color="xkcd:fuchsia",
+    data=datac,
+    fit_reg=True,
+    marker="o",
+    ci=None,
+    ax=ax[1],
+)
+sns.regplot(
+    x="pH_s0_mean",
+    y="diff_opt_vindta",
+    color="xkcd:blue violet",
+    data=datac,
+    fit_reg=True,
+    marker="o",
+    ci=None,
+    ax=ax[2],
+)
 
 # axis labels
 ax1.set_xlabel("$pH_{optode}$ @ 20°C")
@@ -363,7 +533,5 @@ ax3.set_ylabel("$∆pH_{VINDTA}$ @ 20°C")
 plt.tight_layout()
 
 # save plot
-plt.savefig('./figures/scatter_diff_pH_opt.png', format = 'png')
+plt.savefig("./figures/scatter_diff_pH_opt.png", format="png")
 plt.show()
-
-

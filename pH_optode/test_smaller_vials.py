@@ -9,7 +9,7 @@ text_files_folder_path = "data/vials_test/"
 df = ks.pH_optode(spreadsheet_path, text_files_folder_path)
 
 # Recalculate pH at 25 degrees
-df['pH_recalc'] = pyco2.sys(
+df["pH_recalc"] = pyco2.sys(
     df.pH_NBS,
     2300,
     3,
@@ -18,9 +18,9 @@ df['pH_recalc'] = pyco2.sys(
     temperature=df.temperature,
     salinity=35,
     temperature_out=25,
-)['pH_out']
+)["pH_out"]
 
-df['pH_recalc'] = round(df['pH_recalc'], 3)
+df["pH_recalc"] = round(df["pH_recalc"], 3)
 
 # Save as csv
 df.to_csv("data/vials_test/results.csv", index=False)
