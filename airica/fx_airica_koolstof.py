@@ -57,7 +57,7 @@ def process_airica(
     db,
     dbs_filepath,
     results_file_path_and_name=None,
-    draw_figure=True
+    draw_figure=True,
 ):
     """Process AIRICA raw data by extracting data from .dbs file and
     adding it to .xlsx file, calculating conversion factor from CRMs for
@@ -69,10 +69,10 @@ def process_airica(
 
     # Add ".dbs" data to ".xlsx"
     db = pd.merge(left=db, right=dbs, how="left", left_on="name", right_on="bottle")
-    
+
     # Drop useless columns
-    db = db.loc[:, ~db.columns.str.endswith('_y')]
-    db.columns = db.columns.str.replace('_x', '')
+    db = db.loc[:, ~db.columns.str.endswith("_y")]
+    db.columns = db.columns.str.replace("_x", "")
 
     # Check that ".dbs" bottle = ".xlsx" name and drop "bottle" column
     if db["name"].equals(db["bottle"]):
@@ -80,14 +80,16 @@ def process_airica(
         db = db.drop(columns=["bottle"])
     else:
         KeyError
-        print("ERROR: mismatch between dbs and xlsx files. Please \
-              check pandas Series. ")
-        
+        print(
+            "ERROR: mismatch between dbs and xlsx files. Please \
+              check pandas Series. "
+        )
+
         mismatch = pd.DataFrame()
-        mismatch['dbs_name'] = dbs['bottle']
-        mismatch['db_name'] = db['name']
+        mismatch["dbs_name"] = dbs["bottle"]
+        mismatch["db_name"] = db["name"]
         return mismatch
-    
+
     # Recalculate density
     db["density_analysis"] = np.nan
     db["density_analysis"] = seawater_1atm_MP81(
@@ -114,15 +116,12 @@ def process_airica(
     db_cf = db_cf.groupby(by=["analysis_batch"]).apply(get_CF).reset_index()
 
     print(db_cf)
-    
+
     # Assign CRM a and b to samples based on analysis batch
-    db = pd.merge(left=db, right=db_cf, how="left", on="analysis_batch")        
+    db = pd.merge(left=db, right=db_cf, how="left", on="analysis_batch")
 
     # Calculate TCO2 values
-    db["TCO2"] = (
-        ((db.b * db.area_av_3) + db.a) 
-        / (db.density_analysis * db.sample_v)
-    )
+    db["TCO2"] = ((db.b * db.area_av_3) + db.a) / (db.density_analysis * db.sample_v)
 
     if draw_figure:
         # Prepare colours and markers
@@ -137,16 +136,16 @@ def process_airica(
                 "xkcd:red",
                 "xkcd:teal",
                 "xkcd:orange",
-                "xkcd:fuchsia"
+                "xkcd:fuchsia",
             )
         )
         # Plot linear regresion of CRM calibration
         batches = db["analysis_batch"].unique().tolist()
-        
+
         # Create figure
         f, ax = plt.subplots(dpi=300)
 
-        # Linear regression through CRMs used for calibration   
+        # Linear regression through CRMs used for calibration
         # L = db.location == "CRM"
         sns.regplot(
             x=db.area_av_3[L],
@@ -155,18 +154,18 @@ def process_airica(
             color="xkcd:black",
             ci=False,
             ax=ax,
-            line_kws={"zorder":0, "linestyle":"--", "alpha":0.7}
-            )
-        
+            line_kws={"zorder": 0, "linestyle": "--", "alpha": 0.7},
+        )
+
         # Scatter CRM points
         for batch in batches:
-            L = db["analysis_batch"]==batch
+            L = db["analysis_batch"] == batch
             data = db[L]
             m = next(markers)
             c = next(colors)
-            
+
             L = db.location == "CRM"
-                    
+
             sns.scatterplot(
                 x=data.area_av_3[L],
                 y=data.CT_d_sample_v[L],
@@ -174,27 +173,27 @@ def process_airica(
                 color=c,
                 marker=m,
                 label=data["analysis_date"].unique(),
-                ax=ax
-                )
+                ax=ax,
+            )
 
         # Improve figure
-        xmin = round(db[L]['area_av_3'].min() - 500)
-        xmax = round(db[L]['area_av_3'].max() + 500)
+        xmin = round(db[L]["area_av_3"].min() - 500)
+        xmax = round(db[L]["area_av_3"].max() + 500)
         plt.xlim([xmin, xmax])
-        
-        ax.set_xlabel('$AREA_{average}$')
-        ax.set_ylabel('$TCO_{2}$ x density x volume')
-        
-        ax.grid(alpha=0.3)       
-        ax.legend(title="Analysis date", fontsize='small', fancybox=True)
+
+        ax.set_xlabel("$AREA_{average}$")
+        ax.set_ylabel("$TCO_{2}$ x density x volume")
+
+        ax.grid(alpha=0.3)
+        ax.legend(title="Analysis date", fontsize="small", fancybox=True)
 
         # Add R2^2 to graph
         r = stats.linregress(db.area_av_3[L], db.CT_d_sample_v[L])[2]
-        r2 = r**2
+        r2 = r ** 2
         r2s = str(round(r2, 2))
         text = "$R^2$ = " + r2s
-        plt.annotate(text, xy=(0.3, 0.925), xycoords='axes fraction')
-        
+        plt.annotate(text, xy=(0.3, 0.925), xycoords="axes fraction")
+
     # Save results as text file
     if results_file_path_and_name is not None:
         db.to_csv(results_file_path_and_name, index=None)
