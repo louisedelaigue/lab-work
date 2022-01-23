@@ -60,8 +60,8 @@ def process_airica(
     draw_figure=True,
 ):
     """Process AIRICA raw data by extracting data from .dbs file and
-    adding it to .xlsx file, calculating conversion factor from CRMs and
-    computing TCO2 values.
+    adding it to .xlsx file, calculating conversion factor from CRMs for
+    each analysis batch and computing TCO2 values.
     """
 
     # Import ".dbs" file
@@ -94,7 +94,7 @@ def process_airica(
         temperature=db.temperature, salinity=db.salinity
     )
 
-    # Average areas with all areas and only last 3 areas
+    # Average areas with only last 3 areas
     db["area_av_3"] = (db.area_2 + db.area_3 + db.area_4) / 3
 
     # Calculate DIC * density * sample_v
@@ -109,16 +109,19 @@ def process_airica(
         b, a = stats.linregress(db.area_av_3, db.CT_d_sample_v)[:2]
         return pd.Series({"a": a, "b": b})
 
-    L = db.location == "CRM"
+    L = db["reference_good"] == True
     db_cf = db[L]
     db_cf = db_cf.groupby(by=["analysis_batch"]).apply(get_CF).reset_index()
 
+    print(db_cf)
+    
     # Assign CRM a and b to samples based on analysis batch
     db = pd.merge(left=db, right=db_cf, how="left", on="analysis_batch")        
 
     # Calculate TCO2 values
-    db["TCO2"] = ((db.b * db.area_av_3) + db.a) / (
-        db.density_analysis * db.sample_v
+    db["TCO2"] = (
+        ((db.b * db.area_av_3) + db.a) 
+        / (db.density_analysis * db.sample_v)
     )
 
     if draw_figure:
@@ -143,8 +146,8 @@ def process_airica(
         # Create figure
         f, ax = plt.subplots(dpi=300)
 
-        # Linear regression through CRMs       
-        L = db.location == "CRM"
+        # Linear regression through CRMs used for calibration   
+        # L = db.location == "CRM"
         sns.regplot(
             x=db.area_av_3[L],
             y=db.CT_d_sample_v[L],
@@ -175,8 +178,8 @@ def process_airica(
                 )
 
         # Improve figure
-        xmin = db[L]['area_av_3'].min() - 500
-        xmax = db[L]['area_av_3'].max() + 500
+        xmin = round(db[L]['area_av_3'].min() - 500)
+        xmax = round(db[L]['area_av_3'].max() + 500)
         plt.xlim([xmin, xmax])
         
         ax.set_xlabel('$AREA_{average}$')

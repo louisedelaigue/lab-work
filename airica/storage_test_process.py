@@ -12,31 +12,28 @@ db = pd.read_excel('./data/LD_storage_test/AIRICA_storage_test_mod_20012022.xlsx
 L = db['DIC'].isnull()
 db = db[~L]
 
-# Ignore data from 27/10/2021 (AIRICA malfunction)
-L = db['analysis_batch'] == 3
-db = db[~L]
+# Remove AIRICA malfunction days
+bad_batches = [3, 5]
+db = db[~db["analysis_batch"].isin(bad_batches)]
 
-# TEST - Ignore U12
-# L = db['name'] == 'U12'
-# db = db[~L]
+# Select which CRMs to use/avoid for calibration
+db.loc[db["name"].str.startswith("CRM-"), "reference_good"] = True
+db.loc[db['name']=='CRM-189-0468-10', 'reference_good'] = False
+db.loc[db['name']=='CRM-189-0468-09', 'reference_good'] = False
+db.loc[db['name']=='CRM-189-0468-07', 'reference_good'] = False
+db.loc[db['name']=='CRM-195-0078-1200-2', 'reference_good'] = False
+db.loc[db['name']=='CRM-189-0468-17', 'reference_good'] = False
+db.loc[db['name']=='CRM-195-0078-25', 'reference_good'] = False
 
-# TEST - Ignore sample CRMS from 20/01/2022
-# L = db['name'] =="CRM-189-0468-17"
-# db = db[~L]
-# L = db['name'] =="CRM-195-0078-25"
-# db = db[~L]
+db["reference_good"].fillna(False, inplace=True)
 
 # Process AIRICA data
 results = process_airica(db,
                          './data/LD_storage_test/LD_storage_test_mod_20012022.dbs',
                            './data/LD_storage_test/results_storage_test.csv',
-                    )
+)
 
 results.to_csv('./data/LD_storage_test/results.csv', index=False)
-
-# Drop analysis_batch = 5 (AIRICA malfunction)
-L = results["analysis_batch"] == 5
-results = results[~L]
 
 # Add a label column
 results["label"] = np.nan
@@ -133,7 +130,6 @@ ymin = round(results['TCO2'][L].min() - 2)
 ymax = round(results['TCO2'][L].max() + 2)
 plt.ylim([ymin, ymax])
 
-ax.legend(["Rinsed", "Unrinsed"])
 ax.legend().set_title("")
 
 ax.set_ylabel('$TCO_{2}$ / $μmol⋅kg^{-1}$')
