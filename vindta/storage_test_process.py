@@ -217,7 +217,9 @@ dbs['time_since_sampling'] = (dbs['analysis_datetime'] - start_date).dt.days
 # Statistics on all replicates
 L = (dbs['bottle'].str.startswith('S')) & (dbs['alkalinity'].notnull())
 SE = stats.mstats.sem(dbs['alkalinity'][L], axis=None, ddof=0)
-print('Standard error of measurement for all replicates = {}'.format(SE))
+print('Standard error for all replicates = {}'.format(SE))
+slope = stats.linregress(dbs[L]["analysis_batch"], dbs[L]["alkalinity"])[0]
+print("Slope for all replicates = {}".format(slope))
 
 # Create stats table per analysis batch
 dbs['group'] = 1
@@ -266,23 +268,22 @@ fig, ax = plt.subplots(dpi=300)
 
 # Linear regression
 L = (dbs['bottle'].str.startswith('S'))
-sns.scatterplot(y='alkalinity',
-                 x='time_since_sampling',
-                 data=dbs[L],
-                 color='xkcd:blue'
-                )
+sns.stripplot(y='alkalinity',
+              x='time_since_sampling',
+              data=dbs[L],
+              color='xkcd:blue',
+              jitter=True,
+              ax=ax
+)
 
 # Improve figure
-ymin = dbs['alkalinity'][L].min() - 2
-ymax = dbs['alkalinity'][L].max() + 2
-xmin = dbs['time_since_sampling'].min() - 1
-xmax = dbs['time_since_sampling'].max() + 1
-plt.xlim([xmin, xmax])
+ymin = round(dbs['alkalinity'][L].min() - 2)
+ymax = round(dbs['alkalinity'][L].max() + 2)
 plt.ylim([ymin, ymax])
 
 ax.grid(alpha=0.3)
 
-ax.set_ylabel('Alkalinity / μmol/kg')
+ax.set_ylabel('Alkalinity / $μmol⋅kg^{-1}$')
 ax.set_xlabel('Time since sampling (days)')
 
 plt.tight_layout()

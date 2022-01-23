@@ -136,7 +136,7 @@ plt.ylim([ymin, ymax])
 ax.legend(["Rinsed", "Unrinsed"])
 ax.legend().set_title("")
 
-ax.set_ylabel('$TCO_{2}$ / $μmol • kg^{-1}$')
+ax.set_ylabel('$TCO_{2}$ / $μmol⋅kg^{-1}$')
 ax.set_xlabel('Time since sampling (days)')
 
 ax.grid(alpha=0.3)
