@@ -57,7 +57,7 @@ def process_airica(
     db,
     dbs_filepath,
     results_file_path_and_name=None,
-    draw_figure=True,
+    draw_figure=True
 ):
     """Process AIRICA raw data by extracting data from .dbs file and
     adding it to .xlsx file, calculating conversion factor from CRMs for
@@ -194,7 +194,7 @@ def process_airica(
         r2s = str(round(r2, 2))
         text = "$R^2$ = " + r2s
         plt.annotate(text, xy=(0.3, 0.925), xycoords='axes fraction')
-
+        
     # Save results as text file
     if results_file_path_and_name is not None:
         db.to_csv(results_file_path_and_name, index=None)

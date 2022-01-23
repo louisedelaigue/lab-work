@@ -139,4 +139,4 @@ ax.grid(alpha=0.3)
 plt.tight_layout()
 
 # Save plot
-plt.savefig('./figures/storage_test_DIC_3areas.png')
+plt.savefig('./figures/storage_test_DIC.png')
