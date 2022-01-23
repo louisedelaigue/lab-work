@@ -38,11 +38,18 @@ results.to_csv('./data/LD_storage_test/results.csv', index=False)
 L = results["analysis_batch"] == 5
 results = results[~L]
 
+# Add a label column
+results["label"] = np.nan
+results.loc[results["location"]=="R", "label"] = "Rinsed"
+results.loc[results["location"]=="U", "label"] = "Unrinsed"
+
 # === STATISTICS
 # Statistics on all replicates
 L = results['name'].str.startswith(('R', 'U'))
 SE = stats.mstats.sem(results['TCO2'][L], axis=None, ddof=0)
-print('Standard error of measurement for all replicates = {}'.format(SE))
+print('Standard error for all replicates = {}'.format(SE))
+slope = stats.linregress(results[L]["analysis_batch"], results[L]["TCO2"])[0]
+print("Slope for all replicates = {}".format(slope))
 
 # Create table to hold statistics for each analysis batch
 batches = list(results['analysis_batch'].unique())
@@ -51,6 +58,7 @@ statistics['analysis_date'] = np.nan
 statistics['n_samples'] = np.nan
 statistics['mean_all'] = np.nan
 statistics['median_all'] = np.nan
+statistics["slope_all"] = np.nan
 statistics['standard_error_batch'] = np.nan
 statistics['standard_error_all_batches'] = np.nan
 statistics['mean_R'] = np.nan
@@ -107,37 +115,28 @@ results['time_since_sampling'] = (results['datetime'] - start_date).dt.days
 # Create figure
 fig, ax = plt.subplots(dpi=300)
 
-# Scatter rinsed samples in dark blue
-L = results['name'].str.startswith('R')
-sns.scatterplot(y='TCO2',
-                 x='time_since_sampling',
-                 data=results[L],
-                 color='xkcd:blue',
-                 label='Rinsed vials',
-                 ci=False,
-                 ax=ax
-                )
+# Isolate rinsed and unrinsed replicates from dataset
+L = results['name'].str.startswith(("R", "U"))
 
-# Scatter unrinsed samples in light blue
-L = results['name'].str.startswith('U')
-sns.scatterplot(y='TCO2',
-                 x='time_since_sampling',
-                 data=results[L],
-                 color='xkcd:fuchsia',
-                 label='Unrinsed vials', 
-                 ci=False,
-                 ax=ax
-                )
+# Scatter rinsed samples in dark blue
+sns.stripplot(y='TCO2',
+              x='time_since_sampling',
+              hue="label",
+              data=results[L],
+              palette="viridis",
+              jitter=True,
+              ax=ax
+)
 
 # Improve figure
-ymin = results['TCO2'][L].min() - 2
-ymax = results['TCO2'][L].max() + 2
-xmin = results['time_since_sampling'].min() - 1
-xmax = results['time_since_sampling'].max() + 1
-plt.xlim([xmin, xmax])
+ymin = round(results['TCO2'][L].min() - 2)
+ymax = round(results['TCO2'][L].max() + 2)
 plt.ylim([ymin, ymax])
 
-ax.set_ylabel('$TCO_{2}$ / μmol/kg')
+ax.legend(["Rinsed", "Unrinsed"])
+ax.legend().set_title("")
+
+ax.set_ylabel('$TCO_{2}$ / $μmol • kg^{-1}$')
 ax.set_xlabel('Time since sampling (days)')
 
 ax.grid(alpha=0.3)
