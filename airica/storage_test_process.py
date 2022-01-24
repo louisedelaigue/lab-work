@@ -17,7 +17,13 @@ db = db[~L]
 bad_batches = [3, 5]
 db = db[~db["analysis_batch"].isin(bad_batches)]
 
+# Assign metadata
+db.loc[db["name"].str.startswith(("J", "U", "R")), "salinity"] = 32
+db.loc[db["name"].str.startswith("CRM-189"), "salinity"] = 33.494
+db.loc[db["name"].str.startswith("CRM-195"), "salinity"] = 33.485
+
 # Select which CRMs to use/avoid for calibration
+db["reference_good"] = False
 db.loc[db["name"].str.startswith("CRM-"), "reference_good"] = True
 db.loc[db["name"] == "CRM-189-0468-10", "reference_good"] = False
 db.loc[db["name"] == "CRM-189-0468-09", "reference_good"] = False
@@ -25,8 +31,6 @@ db.loc[db["name"] == "CRM-189-0468-07", "reference_good"] = False
 db.loc[db["name"] == "CRM-195-0078-1200-2", "reference_good"] = False
 db.loc[db["name"] == "CRM-189-0468-17", "reference_good"] = False
 db.loc[db["name"] == "CRM-195-0078-25", "reference_good"] = False
-
-db["reference_good"].fillna(False, inplace=True)
 
 # Process AIRICA data
 results = process_airica(
