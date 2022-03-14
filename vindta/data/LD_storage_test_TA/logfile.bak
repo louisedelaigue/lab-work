@@ -170177,3 +170177,193 @@ bottle	CRM-195-0114-2	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
 
 
 3C stirrer off.mth run started 01/19/22  17:46
+3C do nothing.mth run started 05/02/05  00:08
+3C test all valves.mth run started 05/02/05  00:09
+3C test all valves.mth run started 05/02/05  00:25
+3C standard AT only.mth run started 02/17/22  13:52
+bottle	J30	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	0.00	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/17/22  14:03
+bottle	J31	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2361.44	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/17/22  14:26
+bottle	J32	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2361.84	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/17/22  14:55
+bottle	J33	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2362.01	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/17/22  15:17
+bottle	J34	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2362.82	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/17/22  15:40
+bottle	J35	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2364.46	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/17/22  16:03
+bottle	J36	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2362.74	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/17/22  16:26
+bottle	J37	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2363.10	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/17/22  17:02
+bottle	J38	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2364.90	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C fill AT pipette.mth run started 02/17/22  17:25
+3C empty pipette into waste.mth run started 02/17/22  17:27
+3C empty pipette into waste.mth run started 02/17/22  17:53
+3C test all valves.mth run started 05/02/05  00:03
+3C standard AT only.mth run started 05/02/05  00:10
+bottle	J39	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2364.23	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  09:30
+bottle	J40	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2362.14	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  09:52
+bottle	J41	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2351.75	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  10:17
+bottle	J42	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2334.91	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  10:39
+bottle	J43	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2336.21	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  10:59
+bottle	J44	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2336.56	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  11:36
+bottle	CRM-189-0408-1	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	0.00	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  12:04
+bottle	CRM-189-0408-1-1	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2155.07	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  12:39
+bottle	S39	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2229.96	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  13:00
+bottle	S91	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2228.52	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  13:41
+bottle	S48	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2231.18	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  14:03
+bottle	S76	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2232.37	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  14:24
+bottle	S54	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2233.61	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  14:45
+bottle	S59	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2231.13	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  15:05
+bottle	S50	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2230.63	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  15:25
+bottle	S66	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2232.89	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  15:46
+bottle	S2	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2231.96	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  16:06
+bottle	S86	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2230.23	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  16:28
+bottle	CRM-189-0408-2	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2169.45	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  17:39
+bottle	CRM-189-0235-2	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2162.01	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C standard AT only.mth run started 02/18/22  18:03
+bottle	CRM-189-0235-3	0	0	0	0	0.00	0.00	35.000	4.000	0.00	0.0
+ 	CT	Salt	pip. T	blank	density	TCT	comment	
+ 	0.00	2161.45	35.000	14.31	0.00	1.02612	12.6	
+
+
+3C fill AT pipette.mth run started 02/18/22  18:26
+3C empty pipette into waste.mth run started 02/18/22  18:28
+3C empty pipette into waste.mth run started 02/18/22  18:31

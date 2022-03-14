@@ -168,10 +168,14 @@ dbs.loc[dbs["analysis_datetime"].dt.day == 13, "analysis_batch"] = 2
 dbs.loc[dbs["analysis_datetime"].dt.day == 27, "analysis_batch"] = 3
 dbs.loc[dbs["analysis_datetime"].dt.day == 18, "analysis_batch"] = 4
 dbs.loc[dbs["analysis_datetime"].dt.day == 19, "analysis_batch"] = 5
+dbs.loc[dbs["analysis_datetime"].dt.day == 17, "analysis_batch"] = 6
 
 # Select which TA CRMs to use/avoid for calibration
 dbs["reference_good"] = ~np.isnan(dbs.alkalinity_certified)
 dbs.loc[dbs["bottle"] == "CRM-189-0159-3", "reference_good"] = False
+dbs.loc[dbs["bottle"] == "CRM-189-0408-1", "reference_good"] = False
+dbs.loc[dbs["bottle"] == "CRM-189-0408-2", "reference_good"] = False
+dbs.loc[dbs["bottle"] == "CRM-189-0235-2", "reference_good"] = False
 
 # Ignore bad files
 dbs["file_good"] = True
@@ -217,6 +221,8 @@ dbs["group"] = 1
 dbs.loc[dbs["analysis_datetime"].dt.day == 13, "group"] = 2
 dbs.loc[dbs["analysis_datetime"].dt.day == 27, "group"] = 3
 dbs.loc[dbs["analysis_datetime"].dt.day == 18, "group"] = 4
+dbs.loc[dbs["analysis_datetime"].dt.day == 19, "group"] = 5
+dbs.loc[dbs["analysis_datetime"].dt.day == 17, "group"] = 6
 
 batches = list(dbs["group"].unique())
 statistics = pd.DataFrame({"batch_number": batches})
@@ -234,7 +240,7 @@ for batch in batches:
         & (dbs["group"] == batch)
     )
     A = statistics["batch_number"] == batch
-    statistics.loc[A, "analysis_date"] = dbs["analysis_datetime"][L].dt.date.iloc[0]
+    # statistics.loc[A, "analysis_date"] = dbs["analysis_datetime"][L].dt.date.iloc[0]
     statistics.loc[A, "n_samples"] = dbs["alkalinity"][L].count()
     statistics.loc[A, "mean"] = dbs["alkalinity"][L].mean()
     statistics.loc[A, "median"] = dbs["alkalinity"][L].median()
