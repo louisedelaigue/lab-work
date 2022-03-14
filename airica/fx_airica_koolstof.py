@@ -74,22 +74,6 @@ def process_airica(
     db = db.loc[:, ~db.columns.str.endswith("_y")]
     db.columns = db.columns.str.replace("_x", "")
 
-    # Check that ".dbs" bottle = ".xlsx" name and drop "bottle" column
-    if db["name"].equals(db["bottle"]):
-        print("SUCCESSFUL DBS IMPORT")
-        db = db.drop(columns=["bottle"])
-    else:
-        KeyError
-        print(
-            "ERROR: mismatch between dbs and xlsx files. Please \
-              check pandas Series. "
-        )
-
-        mismatch = pd.DataFrame()
-        mismatch["dbs_name"] = dbs["bottle"]
-        mismatch["db_name"] = db["name"]
-        return mismatch
-
     # Recalculate density
     db["density_analysis"] = np.nan
     db["density_analysis"] = seawater_1atm_MP81(
