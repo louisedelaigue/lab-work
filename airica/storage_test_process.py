@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 
 # Import lab file
 db = pd.read_excel(
-    "./data/LD_storage_test/AIRICA_storage_test_mod_20012022.xlsx", na_values=-9999
+    "./data/LD_storage_test/AIRICA_storage_test_mod_14032022.xlsx", na_values=-9999
 )
 
 # Remove nan
@@ -14,7 +14,7 @@ L = db["DIC"].isnull()
 db = db[~L]
 
 # Remove AIRICA malfunction days
-bad_batches = [3, 5]
+bad_batches = [3, 5, 8]
 db = db[~db["analysis_batch"].isin(bad_batches)]
 
 # Assign metadata
@@ -31,11 +31,12 @@ db.loc[db["name"] == "CRM-189-0468-07", "reference_good"] = False
 db.loc[db["name"] == "CRM-195-0078-1200-2", "reference_good"] = False
 db.loc[db["name"] == "CRM-189-0468-17", "reference_good"] = False
 db.loc[db["name"] == "CRM-195-0078-25", "reference_good"] = False
+db.loc[db["name"] == "CRM-189-0408-1200-7", "reference_good"] = False
 
 # Process AIRICA data
 results = process_airica(
     db,
-    "./data/LD_storage_test/LD_storage_test_mod_20012022.dbs",
+    "./data/LD_storage_test/LD_storage_test_mod_14032022.dbs",
     "./data/LD_storage_test/results_storage_test.csv",
 )
 
@@ -168,10 +169,10 @@ sns.stripplot(
 
 # Improve figure
 ymin = round(results["TCO2"][L].min() - 2)
-ymax = round(results["TCO2"][L].max() + 2)
+ymax = round(results["TCO2"][L].max() + 3)
 plt.ylim([ymin, ymax])
 
-ax.legend().set_title("")
+ax.legend(loc="upper left").set_title("")
 
 ax.set_ylabel("$TCO_{2}$ / $μmol⋅kg^{-1}$")
 ax.set_xlabel("Time since sampling (days)")
