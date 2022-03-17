@@ -264,7 +264,7 @@ statistics.to_csv("./data/stats_vindta.csv", index=False)
 fig, ax = plt.subplots(dpi=300)
 
 # Linear regression
-L = dbs["bottle"].str.startswith("S")
+L = (dbs["bottle"].str.startswith("S")) & (dbs["alkalinity"] > 2260)
 sns.stripplot(
     y="alkalinity",
     x="time_since_sampling",
