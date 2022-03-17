@@ -175,7 +175,7 @@ dbs["reference_good"] = ~np.isnan(dbs.alkalinity_certified)
 dbs.loc[dbs["bottle"] == "CRM-189-0159-3", "reference_good"] = False
 dbs.loc[dbs["bottle"] == "CRM-189-0408-1", "reference_good"] = False
 dbs.loc[dbs["bottle"] == "CRM-189-0408-2", "reference_good"] = False
-dbs.loc[dbs["bottle"] == "CRM-189-0235-2", "reference_good"] = False
+dbs.loc[dbs["bottle"] == "CRM-189-0235-3", "reference_good"] = False
 
 # Ignore bad files
 dbs["file_good"] = True
