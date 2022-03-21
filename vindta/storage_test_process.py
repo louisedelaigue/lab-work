@@ -147,6 +147,7 @@ dbs.loc[dbs.crm_batch_195, "total_ammonia"] = 0  # micromol/kg-sw
 
 # Assign temperature = 25.0 for VINDTA analysis temperature
 dbs["temperature_override"] = 25.0
+dbs.loc[dbs["analysis_datetime"].dt.day == 19, "temperature_override"] = 23
 
 # Assign salinity to junks and samples
 dbs["salinity"] = dbs["salinity"].fillna(35)
@@ -175,7 +176,6 @@ dbs["reference_good"] = ~np.isnan(dbs.alkalinity_certified)
 dbs.loc[dbs["bottle"] == "CRM-189-0159-3", "reference_good"] = False
 dbs.loc[dbs["bottle"] == "CRM-189-0408-1", "reference_good"] = False
 dbs.loc[dbs["bottle"] == "CRM-189-0408-2", "reference_good"] = False
-dbs.loc[dbs["bottle"] == "CRM-189-0235-3", "reference_good"] = False
 
 # Ignore bad files
 dbs["file_good"] = True
