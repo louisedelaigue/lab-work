@@ -17,6 +17,10 @@ dbs = ks.read_dbs("data/LD_storage_test_TA/LD_storage_test_TA.dbs", logfile=logf
 L = dbs["bottle"].str.startswith("H")
 dbs = dbs[~L]
 
+# Remove S48 for now
+L = dbs["bottle"]=="S48"
+dbs = dbs[~L]
+
 # Create empty metadata columns
 for meta in [
     "salinity",
@@ -29,22 +33,38 @@ for meta in [
     dbs[meta] = np.nan
 
 # === DATE ERRORS
-# Modify date error for 06/10/2021
-L = (
-    (dbs["analysis_datetime"].dt.day == 2)
-    & (dbs["analysis_datetime"].dt.month == 5)
-    & (dbs["analysis_datetime"].dt.year == 2005)
-    & (dbs["analysis_datetime"].dt.hour < 9)
-)
-dbs.loc[L, "analysis_datetime"] = dbs["analysis_datetime"] + DateOffset(hours=10)
-dbs.loc[L, "analysis_datetime"] = dbs["analysis_datetime"].apply(
-    lambda dt: dt.replace(year=2021, month=10, day=6)
-)
+# List samples per analysis
+september = [
+    "J03",
+    "J04",
+    "J05",
+    "J06",
+    "CRM-189-0350-0901-U",
+    "CRM-189-0960-1023-U",
+    "S08",
+    "S38",
+    "S55",
+    "S01",
+    "S47",
+    "S92",
+    "S32",
+    "S07",
+    "S36",
+    "S68",
+    "CRM-189-0350-0901-U-2"
+    ]
+
+for sample in september:
+    L = dbs["bottle"] == sample
+    dbs.loc[L, "analysis_datetime"] = dbs["analysis_datetime"] + DateOffset(hours=10)
+    dbs.loc[L, "analysis_datetime"] = dbs["analysis_datetime"].apply(
+        lambda dt: dt.replace(year=2021, month=10, day=6)
+    )
 
 # No date error for 13/10/2021
 
 # # Modify date error for 27/10/2021
-october_list = [
+october = [
     "J10",
     "J11",
     "J12",
@@ -68,14 +88,15 @@ october_list = [
     "CRM-189-0159-2",
     "CRM-189-0159-3",
 ]
-for sample in october_list:
+for sample in october:
     L = dbs["bottle"] == sample
+    dbs.loc[L, "analysis_datetime"] = dbs["analysis_datetime"] - DateOffset(hours=8)
     dbs.loc[L, "analysis_datetime"] = dbs["analysis_datetime"].apply(
         lambda dt: dt.replace(year=2021, month=10, day=27)
     )
-
-# # Modify date error for 18/11/2021
-november_list = [
+    
+# Modify date error for 18/11/2021
+november = [
     "J20",
     "J21",
     "J22",
@@ -107,21 +128,37 @@ november_list = [
     "CRM-195-0052-4",
 ]
 
-for sample in november_list:
+for sample in november:
     L = dbs["bottle"] == sample
+    dbs.loc[L, "analysis_datetime"] = dbs["analysis_datetime"] - DateOffset(hours=8)
     dbs.loc[L, "analysis_datetime"] = dbs["analysis_datetime"].apply(
         lambda dt: dt.replace(year=2021, month=11, day=18)
     )
-# dbs.loc[L, 'analysis_datetime'] = (dbs['analysis_datetime']
-#                                    .apply(lambda dt: dt.replace(year=2021,
-#                                                                 month=11,
-#                                                                 day=18
-#                                                                 )
-#                                           )
-#                                    )
+    
+# Change dates for february
+february = [
+    "J39",
+    "J45",
+    "J46",
+    "J47",
+    "J48"
+    ]
+
+for sample in february:
+    L = dbs["bottle"] == sample
+    dbs.loc[L, "analysis_datetime"] = dbs["analysis_datetime"] + DateOffset(hours=8)
+    dbs.loc[L, "analysis_datetime"] = dbs["analysis_datetime"].apply(
+        lambda dt: dt.replace(year=2022, month=2, day=18)
+    )
 
 # Reparse datenum
 dbs["analysis_datenum"] = mdates.date2num(dbs.analysis_datetime)
+
+# Only keep storage test samples
+L = dbs["bottle"].str.startswith(("CRM", "S"))
+dbs = dbs[L]
+L = dbs["bottle"].str.startswith("SO")
+dbs = dbs[~L]
 
 # Assign metadata values for CRMs batch 189
 prefixes = "CRM-189-"
@@ -165,11 +202,16 @@ dbs["file_path"] = "data/LD_storage_test_TA/"
 # Second acid batch made on 19/01/2022
 # // this remedies the acid drift
 dbs["analysis_batch"] = 1  # made 15/09/2021
-dbs.loc[dbs["analysis_datetime"].dt.day == 13, "analysis_batch"] = 2
-dbs.loc[dbs["analysis_datetime"].dt.day == 27, "analysis_batch"] = 3
-dbs.loc[dbs["analysis_datetime"].dt.day == 18, "analysis_batch"] = 4
-dbs.loc[dbs["analysis_datetime"].dt.day == 19, "analysis_batch"] = 5
-dbs.loc[dbs["analysis_datetime"].dt.day == 17, "analysis_batch"] = 6
+dbs.loc[dbs["analysis_datetime"].dt.strftime('%m-%d')=="10-13", "analysis_batch"] = 2
+dbs.loc[dbs["analysis_datetime"].dt.strftime('%m-%d')=="10-27", "analysis_batch"] = 3
+dbs.loc[dbs["analysis_datetime"].dt.strftime('%m-%d')=="11-18", "analysis_batch"] = 4
+dbs.loc[dbs["analysis_datetime"].dt.strftime('%m-%d')=="01-19", "analysis_batch"] = 5
+dbs.loc[dbs["analysis_datetime"].dt.strftime('%m-%d')=="02-17", "analysis_batch"] = 6
+dbs.loc[dbs["analysis_datetime"].dt.strftime('%m-%d')=="02-18", "analysis_batch"] = 7
+dbs.loc[dbs["analysis_datetime"].dt.strftime('%m-%d')=="03-16", "analysis_batch"] = 8
+dbs.loc[dbs["analysis_datetime"].dt.strftime('%m-%d')=="04-08", "analysis_batch"] = 9
+dbs.loc[dbs["analysis_datetime"].dt.strftime('%m-%d')=="04-11", "analysis_batch"] = 10
+dbs.loc[dbs["analysis_datetime"].dt.strftime('%m-%d')=="04-12", "analysis_batch"] = 11
 
 # Select which TA CRMs to use/avoid for calibration
 dbs["reference_good"] = ~np.isnan(dbs.alkalinity_certified)
@@ -186,6 +228,7 @@ dbs.loc[dbs["bottle"] == "J17", "file_good"] = False
 dbs.loc[dbs["bottle"] == "CRM-189-0159-3", "file_good"] = False
 dbs.loc[dbs["bottle"] == "S04", "file_good"] = False
 dbs.loc[dbs["bottle"] == "S04_2", "file_good"] = False
+dbs.loc[dbs["bottle"] == "S29", "file_good"] = False
 
 # Calibrate and solve alkalinity and plot calibration
 calk.io.get_VINDTA_filenames(dbs)
@@ -196,7 +239,7 @@ titrant_molinity_fname = "figs/LD_storage_test_TA/titrant_molinity.png"
 alkalinity_offset_fname = "figs/LD_storage_test_TA/alkalinity_offset.png"
 calk.dataset.solve(dbs)
 calk.plot.titrant_molinity(
-    dbs, figure_fname=titrant_molinity_fname, show_bad=False, xvar="analysis_datenum"
+    dbs, figure_fname=titrant_molinity_fname, show_bad=False, xvar="analysis_datetime"
 )
 calk.plot.alkalinity_offset(dbs, figure_fname=alkalinity_offset_fname, show_bad=False)
 
@@ -216,17 +259,11 @@ print("Standard error for all replicates = {}".format(SE))
 slope = stats.linregress(dbs[L]["analysis_batch"], dbs[L]["alkalinity"])[0]
 print("Slope for all replicates = {}".format(slope))
 
-# Create stats table per analysis batch
-dbs["group"] = 1
-dbs.loc[dbs["analysis_datetime"].dt.day == 13, "group"] = 2
-dbs.loc[dbs["analysis_datetime"].dt.day == 27, "group"] = 3
-dbs.loc[dbs["analysis_datetime"].dt.day == 18, "group"] = 4
-dbs.loc[dbs["analysis_datetime"].dt.day == 19, "group"] = 5
-dbs.loc[dbs["analysis_datetime"].dt.day == 17, "group"] = 6
-
-batches = list(dbs["group"].unique())
+# Only keep good analysis batches
+batches = [1, 2, 3, 4, 5, 7, 11]
 statistics = pd.DataFrame({"batch_number": batches})
 statistics["analysis_date"] = np.nan
+statistics["time_since_sampling"] = np.nan
 statistics["n_samples"] = np.nan
 statistics["mean"] = np.nan
 statistics["median"] = np.nan
@@ -237,10 +274,11 @@ for batch in batches:
     L = (
         (dbs["bottle"].str.startswith("S"))
         & (dbs["alkalinity"].notnull())
-        & (dbs["group"] == batch)
+        & (dbs["analysis_batch"] == batch)
     )
     A = statistics["batch_number"] == batch
-    # statistics.loc[A, "analysis_date"] = dbs["analysis_datetime"][L].dt.date.iloc[0]
+    statistics.loc[A, "analysis_date"] = dbs["analysis_datetime"][L].dt.date.iloc[0]
+    statistics.loc[A, "time_since_sampling"] = dbs["time_since_sampling"][L].iloc[0]
     statistics.loc[A, "n_samples"] = dbs["alkalinity"][L].count()
     statistics.loc[A, "mean"] = dbs["alkalinity"][L].mean()
     statistics.loc[A, "median"] = dbs["alkalinity"][L].median()
@@ -254,17 +292,12 @@ for batch in batches:
 
 statistics.to_csv("./data/stats_vindta.csv", index=False)
 
-# === ISOLATE HANNA'S DATA
-# L = dbs.bottle.str.startswith("H")
-# hanna = dbs[L]
-# hanna_mean = round(hanna.alkalinity.mean(), 2)
-
 # === PLOT
 # Create figure
 fig, ax = plt.subplots(dpi=300)
 
 # Linear regression
-L = (dbs["bottle"].str.startswith("S")) & (dbs["alkalinity"] > 2260)
+L = (dbs["analysis_batch"].isin(batches)) & (dbs["bottle"].str.startswith("S"))
 sns.stripplot(
     y="alkalinity",
     x="time_since_sampling",
@@ -287,4 +320,33 @@ ax.set_xlabel("Time since sampling (days)")
 plt.tight_layout()
 
 # Save plot
-plt.savefig("./figs/LD_storage_test_TA/storage_test_TA.png")
+plt.savefig("./figs/LD_storage_test_TA/storage_test_TA_sapling.png")
+
+# === PLOT
+# Create figure
+fig, ax = plt.subplots(dpi=300)
+
+# Linear regression
+L = (dbs["analysis_batch"].isin(batches)) & (dbs["bottle"].str.startswith("S"))
+sns.scatterplot(
+    y="alkalinity",
+    x="analysis_datetime",
+    data=dbs[L],
+    color="xkcd:blue",
+    ax=ax,
+)
+
+# Improve figure
+ymin = round(dbs["alkalinity"][L].min() - 2)
+ymax = round(dbs["alkalinity"][L].max() + 2)
+plt.ylim([ymin, ymax])
+
+ax.grid(alpha=0.3)
+
+ax.set_ylabel("Alkalinity / $μmol⋅kg^{-1}$")
+ax.set_xlabel("Time since sampling (days)")
+
+plt.tight_layout()
+
+# Save plot
+plt.savefig("./figs/LD_storage_test_TA/storage_test_TA_time.png")
