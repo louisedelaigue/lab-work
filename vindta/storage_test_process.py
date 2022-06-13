@@ -212,6 +212,7 @@ dbs.loc[dbs["analysis_datetime"].dt.strftime('%m-%d')=="03-16", "analysis_batch"
 dbs.loc[dbs["analysis_datetime"].dt.strftime('%m-%d')=="04-08", "analysis_batch"] = 9
 dbs.loc[dbs["analysis_datetime"].dt.strftime('%m-%d')=="04-11", "analysis_batch"] = 10
 dbs.loc[dbs["analysis_datetime"].dt.strftime('%m-%d')=="04-12", "analysis_batch"] = 11
+dbs.loc[dbs["analysis_datetime"].dt.strftime('%m-%d')=="06-10", "analysis_batch"] = 12
 
 # Select which TA CRMs to use/avoid for calibration
 dbs["reference_good"] = ~np.isnan(dbs.alkalinity_certified)
@@ -261,7 +262,7 @@ slope = stats.linregress(dbs[L]["analysis_batch"], dbs[L]["alkalinity"])[0]
 print("Slope for all replicates = {}".format(slope))
 
 # Only keep good analysis batches
-batches = [1, 2, 3, 4, 5, 7, 11]
+batches = [1, 2, 3, 4, 5, 7, 11, 12]
 statistics = pd.DataFrame({"batch_number": batches})
 statistics["analysis_date"] = np.nan
 statistics["time_since_sampling"] = np.nan
