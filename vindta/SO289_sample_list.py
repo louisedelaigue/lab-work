@@ -1,23 +1,39 @@
 import pandas as pd, numpy as np
 from sklearn.utils import shuffle
 
-# Create df
-df = pd.DataFrame()
+# Create dataframe
+louise = pd.DataFrame()
 
-df["box"] = np.arange(5, 24)
-df = pd.concat([df]*24, ignore_index=True)
+# Create box column
+louise["box"] = np.arange(5, 24)
 
-df = df.sort_values(by="box")
+# Add 24 rows for each box
+louise = pd.concat([louise]*24, ignore_index=True)
 
-df["start"] = 1
+# Sort values by box
+louise = louise.sort_values(by="box")
 
-boxes = list(df["box"])
+# Add 24 bottles per box
+louise["start"] = 1
+boxes = list(louise["box"])
 
 for b in boxes:
-    df.loc[df["box"]==b, "bottle"] = df.loc[df["box"]==b, "start"].cumsum()
+    louise.loc[louise["box"]==b, "bottle"] = louise.loc[louise["box"]==b, "start"].cumsum()
 
-df["sample"] = "SO289" + "-" + df["box"].astype(str) + "-" + df["bottle"].astype(str)
+# Create code name for bottles
+louise["Cruise_samples"] = "SO289" + "-" + louise["box"].astype(str) + "-" + louise["bottle"].astype(str)
 
-df = df.drop(columns=["box", "start", "bottle"])
+# Drop useless columns
+louise = louise.drop(columns=["box", "start", "bottle"])
 
+# Import Yasmine's samples
+yasmine = pd.read_excel("data/SO289/sample list.xlsx")
+
+# Merge both dataframes
+df = pd.concat([louise, yasmine])
+
+# Shuffle rows to randomize sample list
 df = shuffle(df)
+
+# Save as csv
+df.to_csv("./data/SO289/sample_list_20220825.csv", index=False)
