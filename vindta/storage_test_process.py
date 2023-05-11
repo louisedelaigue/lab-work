@@ -3,15 +3,13 @@ from matplotlib import pyplot as plt
 from matplotlib import dates as mdates
 import seaborn as sns
 import koolstof as ks, calkulate as calk
+from koolstof import vindta as ksv
 from pandas.tseries.offsets import DateOffset
 from scipy import stats
 
 # Import logfile and dbs file
-logfile = ks.read_logfile(
-    "./data/LD_storage_test_TA/logfile.bak",
-    methods=["3C standard AT only"],
-)
-dbs = ks.read_dbs("data/LD_storage_test_TA/LD_storage_test_TA.dbs", logfile=logfile)
+logfile = ksv.read_logfile("./data/LD_storage_test_TA/logfile.bak", methods="3C standard AT only")
+dbs = ks.read_dbs("data/LD_storage_test_TA/LD_storage_test_TA.dbs")
 
 # Remove Hanna's samples
 L = dbs["bottle"].str.startswith("H")
