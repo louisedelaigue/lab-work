@@ -3,14 +3,22 @@ import koolstof as ks, calkulate as calk
 from koolstof import vindta as ksv
 
 # Import logfile and dbs file
-logfile = ksv.read_logfile("./data/LD_storage_test_TA/logfile.bak", methods="3C standard AT only")
+logfile = ksv.read_logfile(
+    "./data/LD_storage_test_TA/logfile.bak", methods="3C standard AT only"
+)
 dbs = ks.read_dbs("data/LD_storage_test_TA/LD_storage_test_TA.dbs")
 
 # Only keep HVDM's samples and CRMs
 dbs = dbs[dbs["bottle"].apply(lambda x: x.startswith(("H", "CRM")))]
 
 # Drop useless CRMs
-dbs = dbs[~dbs["bottle"].apply(lambda x: x.startswith(("CRM-189-", "CRM-195-0114-", "CRM-195-0306-", "CRM-195-0117-")))]
+dbs = dbs[
+    ~dbs["bottle"].apply(
+        lambda x: x.startswith(
+            ("CRM-189-", "CRM-195-0114-", "CRM-195-0306-", "CRM-195-0117-")
+        )
+    )
+]
 
 # Create empty metadata columns
 for meta in [
@@ -22,7 +30,7 @@ for meta in [
     "total_ammonia",
 ]:
     dbs[meta] = np.nan
-    
+
 # Assign metadata values for CRMs batch 189
 prefixes = "CRM-189-"
 dbs["crm"] = dbs.bottle.str.startswith("CRM")
@@ -60,11 +68,11 @@ dbs["file_path"] = "data/LD_storage_test_TA/"
 
 # Assign TA acid batches
 # Here we consider all samples for HVDM are the same acid batch
-dbs["analysis_batch"] = 1 
+dbs["analysis_batch"] = 1
 
 # Select which TA CRMs to use/avoid for calibration
 # Only keep CRMs from day of HVDM"s analysis
-dbs["reference_good"] = False #~np.isnan(dbs.alkalinity_certified)
+dbs["reference_good"] = False  # ~np.isnan(dbs.alkalinity_certified)
 dbs.loc[dbs["bottle"] == "CRM-195-0052-1", "reference_good"] = True
 dbs.loc[dbs["bottle"] == "CRM-195-0052-2", "reference_good"] = True
 dbs.loc[dbs["bottle"] == "CRM-195-0052-3", "reference_good"] = False
@@ -92,13 +100,7 @@ dbs = dbs[L]
 dbs = dbs.sort_values("bottle")
 
 # Only keep useful columns
-dbs = dbs[[
-    "bottle",
-    "salinity",
-    "file_name",
-    "titrant_molinity",
-    "alkalinity"
-    ]]
+dbs = dbs[["bottle", "salinity", "file_name", "titrant_molinity", "alkalinity"]]
 
 # Save as csv
 dbs.to_csv("./data/HVDM_TA_results.csv", index=False)
